@@ -11,13 +11,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    glwidget.cpp
 
 HEADERS  += mainwindow.h \
     City.h \
     Block.h \
     Element.h \
     Chain.h \
-    Rectangle.h
+    Rectangle.h \
+    glwidget.h
 
 FORMS    += mainwindow.ui
