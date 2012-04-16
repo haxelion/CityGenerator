@@ -3,14 +3,21 @@
 
 #include "Element.h"
 #include "Chain.h"
+#include "Rectangle.h"
 
-class Block
+class Block : public Rectangle
 {
 private:
 
-    Chain<Element> *firstElement;
+    Chain<Element> *elementChain;
 
 public:
+
+    Block(int x1, int y1, int x2, int y2);
+    ~Block();
+
+    Chain<Element>* getElementChain() {return elementChain;}
+    void divideInElements();
 
 };
 

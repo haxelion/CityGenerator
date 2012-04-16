@@ -5,17 +5,22 @@
 
 enum ElementType {ROAD, BUILDING, GARDEN};
 
-class Element
+class Element : public Rectangle
 {
-public:
+private:
 
     ElementType type;
-    Rectangle *zone;
     float height;
 
-    //constructeur et destructeur
-    Element(Rectangle *zone, ElementType type);
+public:
+
+    Element(int x1, int y1, int x2, int y2, ElementType type);
     ~Element();
+
+    ElementType getType() const {return type;}
+    float getHeight() const {return height;}
+    void setType(ElementType type) {this->type = type;}
+    void setHeight(float height) {this->height = height;}
 
 };
 
