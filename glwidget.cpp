@@ -4,11 +4,11 @@
 #include <math.h>
 #include <GL/glu.h>
 
-glwidget::glwidget(QWidget *parent)
+GLWidget::GLWidget(QWidget *parent)
 {
 }
 
-glwidget::~glwidget()
+GLWidget::~GLWidget()
 {
 
 }

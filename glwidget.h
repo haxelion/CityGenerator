@@ -4,12 +4,12 @@
 #include <QWidget>
 
 
-class glwidget : public QWidget
+class GLWidget : public QWidget
 {
 
 public:
-    glwidget(QWidget * parent =0);
-    ~glwidget();
+    GLWidget(QWidget * parent =0);
+    ~GLWidget();
 };
 
 #endif // GLWIDGET_H
