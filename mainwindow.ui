@@ -14,12 +14,12 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="glwidget" name="GLwidget" native="true">
+   <widget class="GLWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>29</x>
-      <y>19</y>
-      <width>491</width>
+      <x>10</x>
+      <y>10</y>
+      <width>721</width>
       <height>371</height>
      </rect>
     </property>
@@ -48,9 +48,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>glwidget</class>
+   <class>GLWidget</class>
    <extends>QWidget</extends>
-   <header location="global">glwidget.h</header>
+   <header>glwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
