@@ -1,9 +1,9 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include "Element.h"
-#include "Chain.h"
-#include "Rectangle.h"
+#include "element.h"
+#include "chain.h"
+#include "rectangle.h"
 
 class Block : public Rectangle
 {

@@ -1,8 +1,8 @@
 #ifndef CITY_H
 #define CITY_H
 
-#include "Chain.h"
-#include "Block.h"
+#include "chain.h"
+#include "block.h"
 
 class City
 {

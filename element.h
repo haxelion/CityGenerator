@@ -1,7 +1,7 @@
 #ifndef ELEMENT_H
 #define ELEMENT_H
 
-#include "Rectangle.h"
+#include "rectangle.h"
 
 enum ElementType {ROAD, BUILDING, GARDEN};
 

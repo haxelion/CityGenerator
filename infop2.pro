@@ -15,11 +15,11 @@ SOURCES += main.cpp\
     glwidget.cpp
 
 HEADERS  += mainwindow.h \
-    City.h \
-    Block.h \
-    Element.h \
-    Chain.h \
-    Rectangle.h \
-    glwidget.h
+    glwidget.h \
+    block.h \
+    chain.h \
+    city.h \
+    element.h \
+    rectangle.h
 
 FORMS    += mainwindow.ui
