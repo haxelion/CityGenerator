@@ -1,14 +1,14 @@
 #ifndef CITY_H
 #define CITY_H
 
-#include "chain.h"
+#include "list.h"
 #include "block.h"
 
 class City
 {
 private:
 
-    Chain<Block> *blockChain;
+    List<Block> *blockList;
     int xWidth, yWidth;
     int minBlockSize, maxBlockSize;
     float minBuildingHeight, maxBuildingHeight;
@@ -28,7 +28,7 @@ public:
     float getHeightMean() const {return heightMean;}
     float getHeightSigma() const {return heightSigma;}
     bool getGarden() const {return garden;}
-    Chain<Block>* getBlockChain() {return blockChain;}
+    List<Block>* getBlockList() {return blockList;}
 
     void setXWidth(int xWidth) {this->xWidth = xWidth;}
     void setYWidth(int yWidth) {this->yWidth = yWidth;}

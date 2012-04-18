@@ -2,21 +2,21 @@
 #define BLOCK_H
 
 #include "element.h"
-#include "chain.h"
+#include "list.h"
 #include "rectangle.h"
 
 class Block : public Rectangle
 {
 private:
 
-    Chain<Element> *elementChain;
+    List<Element> *elementList;
 
 public:
 
     Block(int x1, int y1, int x2, int y2);
     ~Block();
 
-    Chain<Element>* getElementChain() {return elementChain;}
+    List<Element>* getElementList() {return elementList;}
     void divideInElements();
 
 };
