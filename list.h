@@ -13,11 +13,11 @@ private:
 
 public:
 
-    ListElement(T current){this->current = current;}
+    ListElement(T element){this->element = element;}
     ListElement(){}
-    T getElement() {return current;}
+    T getElement() {return element;}
     ListElement* getNext() {return next;}
-    void setElement(T current) {this->current = current;}
+    void setElement(T element) {this->element = element;}
     void setNext(ListElement *next) {this->next = next;}
 };
 
