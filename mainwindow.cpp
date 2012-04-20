@@ -7,14 +7,22 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /*Connections des événements
+    connect(ui->minBlockSize, SIGNAL(valueChanged(int)), this, SLOT(minBlockSizeChanged(int)));
 
-    connect(ui->, SIGNAL(valueChanged(int)), ui->glWidget, SLOT(setXRotation(int)));
-
-    setWindowTitle(tr("Generateur de ville"));*/
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::start()
+{
+
+}
+
+void MainWindow::minBlockSizeChanged(int x)
+{
+    ui->maxBlockSize->setMinimum(2*x+1);
+}
+
