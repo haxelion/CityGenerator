@@ -14,7 +14,7 @@ private:
 
 public:
 
-    Element(int x1, int y1, int x2, int y2, ElementType type);
+    Element(int x1, int y1, int x2, int y2, float height, ElementType type);
     ~Element();
 
     ElementType getType() const {return type;}
