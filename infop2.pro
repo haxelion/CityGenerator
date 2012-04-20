@@ -13,9 +13,7 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     glwidget.cpp \
-    mathFunctions.cpp \
     city.cpp \
-    rectangle.cpp \
     element.cpp
 
 HEADERS  += mainwindow.h \

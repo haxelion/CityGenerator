@@ -3,29 +3,29 @@
 
 //classe template implémentant une liste liée
 
-template <class T> class ListElement
+template <class T> class ListItem
 {
 
 private:
 
     T element;
-    ListElement *next;
+    ListItem *next;
 
 public:
 
-    ListElement(T element){this->element = element;}
-    ListElement(){}
+    ListItem(T element){this->element = element;}
+    ListItem(){}
     T getElement() {return element;}
-    ListElement* getNext() {return next;}
+    ListItem* getNext() {return next;}
     void setElement(T element) {this->element = element;}
-    void setNext(ListElement *next) {this->next = next;}
+    void setNext(ListItem *next) {this->next = next;}
 };
 
 template <class T> class List
 {
 private:
 
-    ListElement<T> *first, *current;
+    ListItem<T> *first, *current;
     int size, position;
 
     void next();
@@ -61,7 +61,7 @@ template <class T> List<T>::~List()
 {
     //on revient au début de la liste
     start();
-    ListElement<T> *t;
+    ListItem<T> *t;
     //on parcourt toute la chaine en supprimant les éléments un à un
     while(position<size)
     {
@@ -75,8 +75,8 @@ template <class T> List<T>::~List()
 template <class T> void List<T>::addElement(T a)
 {
     //insertion de a au début de la liste
-    ListElement<T> *t = first;
-    first = new ListElement<T>(a);
+    ListItem<T> *t = first;
+    first = new ListItem<T>(a);
     //lien du reste de la liste au nouveau premier maillon
     first->setNext(t);
     //mise à jour de la taille et de la position de current
@@ -103,7 +103,7 @@ template <class T> void List<T>::removeElementAt(int position)
 {
     if(position == 0)
     {
-        ListElement<T> *t = first->getNext();
+        ListItem<T> *t = first->getNext();
         delete first;
         first = t;
     }
@@ -112,7 +112,7 @@ template <class T> void List<T>::removeElementAt(int position)
         //on veut trouver l'élément juste avant celui à supprimer
         goTo(position--);
         //on mémorise l'élément après celui à supprimer
-        ListElement<T> *t = (current->getNext())->getNext();
+        ListItem<T> *t = (current->getNext())->getNext();
         //on supprime l'élément
         delete current->getNext();
         //on lie l'élément avant avec l'élément après pour reformer la liste
@@ -134,9 +134,9 @@ template <class T> void List<T>::insertElementAt(T a, int position)
         //on veut trouver l'élément juste avant l'endroit d'insertion
         goTo(position--);
         //on mémorise l'élément à la position d'insertion
-        ListElement<T> *t = current->getNext();
+        ListItem<T> *t = current->getNext();
         //on insère l'élément
-        current->setNext(new ListElement<T>(a));
+        current->setNext(new ListItem<T>(a));
         //on reforme la liste
         (current->getNext())->setNext(t);
 
