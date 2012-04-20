@@ -68,6 +68,6 @@ void City::divideInBlocks(Rectangle zone)
     }
     else
     {
-        //blockList->addElement(new Block());
+        blockList->addElement(new Block(zone, minBuildingHeight, maxBuildingHeight, heightMean, heightVariance, garden));
     }
 }
