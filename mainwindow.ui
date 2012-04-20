@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>725</width>
-    <height>496</height>
+    <width>772</width>
+    <height>569</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,7 +44,7 @@
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetMinimumSize</enum>
       </property>
@@ -367,6 +367,13 @@
        </layout>
       </item>
       <item>
+       <widget class="QCheckBox" name="jardin">
+        <property name="text">
+         <string>Jardin</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <property name="sizeConstraint">
          <enum>QLayout::SetMinimumSize</enum>
@@ -408,7 +415,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>725</width>
+     <width>772</width>
      <height>21</height>
     </rect>
    </property>
