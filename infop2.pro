@@ -13,8 +13,7 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     glwidget.cpp \
-    city.cpp \
-    element.cpp
+    city.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
