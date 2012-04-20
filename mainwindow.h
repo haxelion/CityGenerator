@@ -17,6 +17,7 @@ public:
 
 public slots:
     void start();
+    void minBlockSizeChanged(int x);
 
 private:
     Ui::MainWindow *ui;
