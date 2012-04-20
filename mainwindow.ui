@@ -68,12 +68,12 @@
            </size>
           </property>
           <property name="text">
-           <string>Hauteur de la ville</string>
+           <string>Longeur de la ville</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="hauteurVille">
+         <widget class="QSpinBox" name="cityLength">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
             <horstretch>0</horstretch>
@@ -121,7 +121,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="largeurVille">
+         <widget class="QSpinBox" name="cityWidth">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -367,7 +367,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QCheckBox" name="jardin">
+       <widget class="QCheckBox" name="garden">
         <property name="text">
          <string>Jardin</string>
         </property>
