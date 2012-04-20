@@ -15,7 +15,7 @@ private:
     int xWidth, yWidth;
     int minBlockSize, maxBlockSize;
     float minBuildingHeight, maxBuildingHeight;
-    float heightMean, heightSigma;
+    float heightMean, heightVariance;
     bool garden;
 
 public:
@@ -30,7 +30,7 @@ public:
     float getMinBuildingHeight() const {return minBuildingHeight;}
     float getMaxBuildingHeight() const {return maxBuildingHeight;}
     float getHeightMean() const {return heightMean;}
-    float getHeightSigma() const {return heightSigma;}
+    float getHeightVariance() const {return heightVariance;}
     bool getGarden() const {return garden;}
     List<Block*>* getBlockList() {return blockList;}
     List<Element*>* getRoadList() {return roadList;}
@@ -42,7 +42,7 @@ public:
     void setMinBuildingHeight(float minBuildingHeight) {this->minBuildingHeight = minBuildingHeight;}
     void setMaxBuildingHeight(float maxBuildingHeight) {this->maxBuildingHeight = maxBuildingHeight;}
     void setHeightMean(float heightMean) {this->heightMean = heightMean;}
-    void setHeightSigma(float heightSigma) {this->heightSigma = heightSigma;}
+    void setHeightVariance(float heightVariance) {this->heightVariance = heightVariance;}
     void setGarden(bool garden) {this->garden = garden;}
 
     void divideInBlocks(Rectangle zone);
