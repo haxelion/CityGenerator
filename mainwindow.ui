@@ -14,13 +14,25 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QWidget" name="widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>400</width>
-        <height>400</height>
+        <width>500</width>
+        <height>500</height>
        </size>
       </property>
       <property name="maximumSize">
@@ -32,24 +44,135 @@
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0">
       <property name="sizeConstraint">
-       <enum>QLayout::SetDefaultConstraint</enum>
+       <enum>QLayout::SetMinimumSize</enum>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <item>
          <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>Hauteur de la ville</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinBox_4">
+         <widget class="QSpinBox" name="hauteurVille">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>50</width>
+            <width>70</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>20</number>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>10000</width>
+            <height>10000</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Largeur de la ville</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="largeurVille">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>20</number>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>10000</width>
+            <height>10000</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Plus petite taille d'un bloc</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="minBlockSize">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
             <height>20</height>
            </size>
           </property>
@@ -58,114 +181,217 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Largeur de la ville</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="spinBox_3"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_9">
-        <item>
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Plus petite taille d'un bloc</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="spinBox_2"/>
-        </item>
-       </layout>
-      </item>
-      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <item>
          <widget class="QLabel" name="label_5">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>10000</width>
+            <height>10000</height>
+           </size>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
           <property name="text">
            <string>Plus grande taille d'un bloc</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinBox"/>
+         <widget class="QSpinBox" name="maxBlockSize">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>20</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <item>
          <widget class="QLabel" name="label_7">
+          <property name="maximumSize">
+           <size>
+            <width>10000</width>
+            <height>10000</height>
+           </size>
+          </property>
           <property name="text">
            <string>Plus petite hauteur d'un batiment</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+         <widget class="QDoubleSpinBox" name="minBuildingHeight">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <item>
          <widget class="QLabel" name="label_8">
+          <property name="maximumSize">
+           <size>
+            <width>10000</width>
+            <height>10000</height>
+           </size>
+          </property>
           <property name="text">
            <string>Plus grande hauteur d'un batiment </string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+         <widget class="QDoubleSpinBox" name="maxBuildingHeight">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>200000000.000000000000000</double>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <item>
          <widget class="QLabel" name="label_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>10000</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>Hauteur moyenne des bulding</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_6"/>
+         <widget class="QDoubleSpinBox" name="heightMean">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <item>
          <widget class="QLabel" name="label_2">
+          <property name="maximumSize">
+           <size>
+            <width>10000</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>Variance de la hauteur</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+         <widget class="QDoubleSpinBox" name="heightVariance">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="Start">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>Démarrer</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="Help">
+          <property name="maximumSize">
+           <size>
+            <width>70</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>Aide</string>
           </property>
