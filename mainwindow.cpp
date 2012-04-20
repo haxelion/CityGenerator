@@ -6,6 +6,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    /*Connections des événements
+
+    connect(ui->, SIGNAL(valueChanged(int)), ui->glWidget, SLOT(setXRotation(int)));
+
+    setWindowTitle(tr("Generateur de ville"));*/
 }
 
 MainWindow::~MainWindow()
