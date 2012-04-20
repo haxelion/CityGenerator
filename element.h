@@ -14,7 +14,12 @@ private:
 
 public:
 
-    Element(int x1, int y1, int x2, int y2, float height, ElementType type);
+    Element(Rectangle zone, float height, ElementType type)
+        :Rectangle(zone)
+    {
+        this->height = height;
+        this->type = type;
+    }
     ~Element();
 
     ElementType getType() const {return type;}
