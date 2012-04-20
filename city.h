@@ -3,12 +3,15 @@
 
 #include "list.h"
 #include "block.h"
+#include "rectangle.h"
+#include "element.h"
 
 class City
 {
 private:
 
-    List<Block> *blockList;
+    List<Block*> *blockList;
+    List<Element*> *roadList;
     int xWidth, yWidth;
     int minBlockSize, maxBlockSize;
     float minBuildingHeight, maxBuildingHeight;
@@ -18,6 +21,7 @@ private:
 public:
 
     City(int xWidth, int yWidth);
+    ~City();
 
     int getXWidth() const {return xWidth;}
     int getYWidth() const {return yWidth;}
@@ -28,7 +32,8 @@ public:
     float getHeightMean() const {return heightMean;}
     float getHeightSigma() const {return heightSigma;}
     bool getGarden() const {return garden;}
-    List<Block>* getBlockList() {return blockList;}
+    List<Block*>* getBlockList() {return blockList;}
+    List<Element*>* getRoadList() {return roadList;}
 
     void setXWidth(int xWidth) {this->xWidth = xWidth;}
     void setYWidth(int yWidth) {this->yWidth = yWidth;}
@@ -40,7 +45,7 @@ public:
     void setHeightSigma(float heightSigma) {this->heightSigma = heightSigma;}
     void setGarden(bool garden) {this->garden = garden;}
 
-    void divideInBlocks();
+    void divideInBlocks(Rectangle zone);
 
 };
 

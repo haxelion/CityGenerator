@@ -14,7 +14,9 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     glwidget.cpp \
     mathFunctions.cpp \
-    city.cpp
+    city.cpp \
+    rectangle.cpp \
+    element.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
