@@ -10,7 +10,7 @@ City::City(int xWidth, int yWidth)
     minBuildingHeight = 0.5;
     maxBuildingHeight = 10000;
     heightMean = 2;
-    heightSigma = 0.5;
+    heightVariance = 0.5;
 
     blockList = new List<Block*>();
     roadList = new List<Element*>();
