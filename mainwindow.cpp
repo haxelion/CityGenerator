@@ -30,7 +30,7 @@ void MainWindow::start()
     myCity->setHeightVariance (ui->heightVariance->value());
     myCity->setMinBuildingHeight (ui->minBuildingHeight->value());
     myCity->setMaxBuildingHeight (ui->maxBuildingHeight->value());
-    myCity->divideInBlocks(Rectangle(0,0,ui->cityLength->value(),ui->cityWidth->value()));
+    myCity->divideInBlocks(Zone(0,0,ui->cityLength->value(),ui->cityWidth->value()));
 }
 
 void MainWindow::minBlockSizeChanged(int x)

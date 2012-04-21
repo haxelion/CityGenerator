@@ -1,7 +1,7 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-class Rectangle
+class Zone
 {
 protected:
 
@@ -9,8 +9,8 @@ protected:
 
 public:
 
-    Rectangle(){}
-    Rectangle(int x1, int y1, int x2, int y2)
+    Zone(){}
+    Zone(int x1, int y1, int x2, int y2)
     {
         this->x1 = x1;
         this->y1 = y1;

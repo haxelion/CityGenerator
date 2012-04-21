@@ -1,8 +1,8 @@
 #include "block.h"
 #include "mathFunctions.h"
 
-Block::Block(Rectangle zone, float minBuildingHeight, float maxBuildingHeight, float heightMean, float heightVariance, bool garden)
-    :Rectangle(zone)
+Block::Block(Zone zone, float minBuildingHeight, float maxBuildingHeight, float heightMean, float heightVariance, bool garden)
+    :Zone(zone)
 {
     this->minBuildingHeight = minBuildingHeight;
     this->maxBuildingHeight = maxBuildingHeight;
@@ -11,7 +11,7 @@ Block::Block(Rectangle zone, float minBuildingHeight, float maxBuildingHeight, f
     this->garden = garden;
 }
 
-void Block::divideInElements(Rectangle zone)
+void Block::divideInElements(Zone zone)
 {
     bool divideX = false, divideY = false;
     int midX,midY;
@@ -29,20 +29,20 @@ void Block::divideInElements(Rectangle zone)
 
     if(divideX && divideY)
     {
-        divideInElements(Rectangle(zone.getX1(),zone.getY1(),midX,midY));
-        divideInElements(Rectangle(midX,zone.getY1(),zone.getX2(),midY));
-        divideInElements(Rectangle(zone.getX1(),midY,midX,zone.getY2()));
-        divideInElements(Rectangle(midX,midY,zone.getX2(),zone.getY2()));
+        divideInElements(Zone(zone.getX1(),zone.getY1(),midX,midY));
+        divideInElements(Zone(midX,zone.getY1(),zone.getX2(),midY));
+        divideInElements(Zone(zone.getX1(),midY,midX,zone.getY2()));
+        divideInElements(Zone(midX,midY,zone.getX2(),zone.getY2()));
     }
     else if(divideX)
     {
-        divideInElements(Rectangle(zone.getX1(),zone.getY1(),midX,zone.getY2()));
-        divideInElements(Rectangle(midX,zone.getY1(),zone.getX2(),zone.getY2()));
+        divideInElements(Zone(zone.getX1(),zone.getY1(),midX,zone.getY2()));
+        divideInElements(Zone(midX,zone.getY1(),zone.getX2(),zone.getY2()));
     }
     else if(divideY)
     {
-        divideInElements(Rectangle(zone.getX1(),zone.getY1(),zone.getX2(),midY));
-        divideInElements(Rectangle(zone.getX1(),midY,zone.getX2(),zone.getY2()));
+        divideInElements(Zone(zone.getX1(),zone.getY1(),zone.getX2(),midY));
+        divideInElements(Zone(zone.getX1(),midY,zone.getX2(),zone.getY2()));
     }
     else
     {
@@ -50,7 +50,7 @@ void Block::divideInElements(Rectangle zone)
     }
 }
 
-bool Block::checkGarden(Rectangle zone)
+bool Block::checkGarden(Zone zone)
 {
     if(zone.getX1() == this->getX1())
         return false;
@@ -63,7 +63,7 @@ bool Block::checkGarden(Rectangle zone)
     return true;
 }
 
-void Block::makeElement(Rectangle zone)
+void Block::makeElement(Zone zone)
 {
     if(garden&&checkGarden(zone))
     {

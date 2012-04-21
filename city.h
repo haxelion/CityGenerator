@@ -3,7 +3,7 @@
 
 #include "list.h"
 #include "block.h"
-#include "rectangle.h"
+#include "zone.h"
 #include "element.h"
 
 class City
@@ -45,7 +45,7 @@ public:
     void setHeightVariance(float heightVariance) {this->heightVariance = heightVariance;}
     void setGarden(bool garden) {this->garden = garden;}
 
-    void divideInBlocks(Rectangle zone);
+    void divideInBlocks(Zone zone);
 
 };
 

@@ -21,8 +21,9 @@ HEADERS  += mainwindow.h \
     block.h \
     city.h \
     element.h \
-    rectangle.h \
+    zone.h \
     list.h \
-    mathFunctions.h
+    mathFunctions.h \
+    zone.h
 
 FORMS    += mainwindow.ui
