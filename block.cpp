@@ -27,25 +27,51 @@ void Block::divideInElements(Rectangle zone)
         divideY = true;
     }
 
-    if(xDivide && yDivide)
+    if(divideX && divideY)
     {
         divideInElements(Rectangle(zone.getX1(),zone.getY1(),midX,midY));
         divideInElements(Rectangle(midX,zone.getY1(),zone.getX2(),midY));
         divideInElements(Rectangle(zone.getX1(),midY,midX,zone.getY2()));
         divideInElements(Rectangle(midX,midY,zone.getX2(),zone.getY2()));
     }
-    else if(xDivide)
+    else if(divideX)
     {
-        divideInBlocks(Rectangle(zone.getX1(),zone.getY1(),midX,zone.getY2()));
-        divideInBlocks(Rectangle(midX,zone.getY1(),zone.getX2(),zone.getY2()));
+        divideInElements(Rectangle(zone.getX1(),zone.getY1(),midX,zone.getY2()));
+        divideInElements(Rectangle(midX,zone.getY1(),zone.getX2(),zone.getY2()));
     }
-    else if(yDivide)
+    else if(divideY)
     {
-        divideInBlocks(Rectangle(zone.getX1(),zone.getY1(),zone.getX2(),midY));
-        divideInBlocks(Rectangle(zone.getX1(),midY,zone.getX2(),zone.getY2()));
+        divideInElements(Rectangle(zone.getX1(),zone.getY1(),zone.getX2(),midY));
+        divideInElements(Rectangle(zone.getX1(),midY,zone.getX2(),zone.getY2()));
     }
     else
     {
-        elementList->addElement(new Element(zone));
+        makeElement(zone);
+    }
+}
+
+bool Block::checkGarden(Rectangle zone)
+{
+    if(zone.getX1() == this->getX1())
+        return false;
+    else if (zone.getY1() == this->getY1())
+        return false;
+    else if(zone.getX2() == this->getX2())
+        return false;
+    else if(zone.getY2() == this->getY2())
+        return false;
+    return true;
+}
+
+void Block::makeElement(Rectangle zone)
+{
+    if(garden&&checkGarden(zone))
+    {
+        elementList->addElement(new Element(zone,0, GARDEN));
+    }
+    else
+    {
+        float height = maxf(minBuildingHeight, minf(maxBuildingHeight, (float)randNormal(heightMean,heightVariance)));
+        elementList->addElement(new Element(zone,height, BUILDING));
     }
 }
