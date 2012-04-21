@@ -176,6 +176,9 @@
             <height>20</height>
            </size>
           </property>
+          <property name="minimum">
+           <number>3</number>
+          </property>
          </widget>
         </item>
        </layout>
@@ -214,6 +217,9 @@
             <width>70</width>
             <height>20</height>
            </size>
+          </property>
+          <property name="minimum">
+           <number>7</number>
           </property>
          </widget>
         </item>
