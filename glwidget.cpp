@@ -16,8 +16,8 @@ GLWidget::GLWidget(QWidget *parent)
     mXRotate = 0;
     mYRotate = 0;
     mZRotate = 0;
-    mXTranslate = 0;
-    mYTranslate = 0;
+    mXTranslate = -50;
+    mYTranslate = -50;
     mZTranslate = 0;
     mScale = 0.75;
     city = NULL;
@@ -130,7 +130,7 @@ void GLWidget::paintGL()
 
     //Applique la transformation
     glLoadIdentity();
-    glTranslatef(mXTranslate, mYTranslate, mZTranslate-5.0);
+    glTranslatef(mXTranslate, mYTranslate, mZTranslate+5.0);
     glRotatef(mXRotate / 16.0, 1.0, 0.0, 0.0);
     glRotatef(mYRotate / 16.0, 0.0, 1.0, 0.0);
     glRotatef(mZRotate / 16.0, 0.0, 0.0, 1.0);

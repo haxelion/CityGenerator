@@ -28,15 +28,6 @@ private:
     ListItem<T> *first, *current;
     int size, position;
 
-    void next()
-    {
-        if(position+1<size)
-        {
-            current = current->getNext();
-            position++;
-        }
-    }
-
 public:
 
 
@@ -149,6 +140,15 @@ public:
         this->position = 0;
     }
 
+    void next()
+    {
+        if(position<size)
+        {
+            current = current->getNext();
+            position++;
+        }
+    }
+
     T getElementAt(int position)
     {
         goTo(position);
@@ -157,13 +157,13 @@ public:
 
     T getCurrentElement() const
     {
-        return current;
+        return current->getElement();
     }
 
     T getNextElement()
     {
         //on ne dépasse pas la fin de la liste
-        if(position+1<size)
+        if(position<size)
             next();
         return current->getElement();
     }
@@ -174,7 +174,7 @@ public:
 
     bool isAtTheEnd() const
     {
-        return position+1 == size;
+        return position == size;
     }
 
 };

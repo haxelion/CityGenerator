@@ -21,7 +21,11 @@ MainWindow::~MainWindow()
 void MainWindow::start()
 {
     if (myCity !=NULL)
+    {
+        ui->glWidget->setCity(0);
         delete myCity;
+    }
+
     myCity = new City (ui->cityLength->value(),ui->cityWidth->value());
     myCity->setGarden(ui->garden->checkState());
     myCity->setMinBlockSize (ui->minBlockSize->value());
@@ -31,6 +35,7 @@ void MainWindow::start()
     myCity->setMinBuildingHeight (ui->minBuildingHeight->value());
     myCity->setMaxBuildingHeight (ui->maxBuildingHeight->value());
     myCity->divideInBlocks(Zone(0,0,ui->cityLength->value(),ui->cityWidth->value()));
+    ui->glWidget->setCity(myCity);
 }
 
 void MainWindow::minBlockSizeChanged(int x)
