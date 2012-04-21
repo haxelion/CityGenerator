@@ -1,11 +1,11 @@
 #ifndef ELEMENT_H
 #define ELEMENT_H
 
-#include "rectangle.h"
+#include "zone.h"
 
 enum ElementType {ROAD, BUILDING, GARDEN};
 
-class Element : public Rectangle
+class Element : public Zone
 {
 private:
 
@@ -14,8 +14,8 @@ private:
 
 public:
 
-    Element(Rectangle zone, float height, ElementType type)
-        :Rectangle(zone)
+    Element(Zone zone, float height, ElementType type)
+        :Zone(zone)
     {
         this->height = height;
         this->type = type;

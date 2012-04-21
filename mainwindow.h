@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <city.h>
-#include "rectangle.h"
+#include "zone.h"
 
 namespace Ui {
 class MainWindow;

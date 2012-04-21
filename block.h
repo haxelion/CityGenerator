@@ -3,9 +3,9 @@
 
 #include "element.h"
 #include "list.h"
-#include "rectangle.h"
+#include "zone.h"
 
-class Block : public Rectangle
+class Block : public Zone
 {
 private:
 
@@ -16,13 +16,13 @@ private:
 
 public:
 
-    Block(Rectangle zone, float minBuildingHeight, float maxBuildingHeight, float heightMean, float heightVariance, bool garden);
+    Block(Zone zone, float minBuildingHeight, float maxBuildingHeight, float heightMean, float heightVariance, bool garden);
     ~Block();
 
     List<Element*>* getElementList() {return elementList;}
-    void divideInElements(Rectangle zone);
-    void makeElement(Rectangle zone);
-    bool checkGarden(Rectangle zone);
+    void divideInElements(Zone zone);
+    void makeElement(Zone zone);
+    bool checkGarden(Zone zone);
 
 };
 
