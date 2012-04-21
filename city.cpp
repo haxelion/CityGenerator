@@ -30,13 +30,13 @@ void City::divideInBlocks(Rectangle zone)
     if(zone.getXWidth()>maxBlockSize) // Si la zone est plus grande que la taille maximale d'un bloc.
     {
 
-        xRoad=rand(zone.getX1()+minBlockSize+1, zone.getX2()-maxBlockSize); // On la découpe en prenant soin de ne pas dépasser la taille minimale d'un bloc.
+        xRoad=rand(zone.getX1()+minBlockSize+1, zone.getX2()-minBlockSize); // On la découpe en prenant soin de ne pas dépasser la taille minimale d'un bloc.
         xDivide=true;
     }
 
     if(zone.getYWidth()>maxBlockSize)
     {
-        yRoad=rand(zone.getY1()+minBlockSize+1, zone.getY2()-maxBlockSize);
+        yRoad=rand(zone.getY1()+minBlockSize+1, zone.getY2()-minBlockSize);
         yDivide=true;
     }
 
