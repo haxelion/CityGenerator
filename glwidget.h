@@ -2,6 +2,7 @@
 #define GLWIDGET_H
 
 #include <QGLWidget>
+#include "city.h"
 //#include "model.h"
 
 class GLWidget : public QGLWidget
@@ -14,6 +15,7 @@ public:
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
+    void setCity(City *city) {this->city = city;}
 
 public slots:
     void setXRotation(int angle);
@@ -50,6 +52,7 @@ private:
     float mFov;
     float mFarRatio;
     float mNearRatio;
+    City *city;
 
     QPoint lastPos;
 };

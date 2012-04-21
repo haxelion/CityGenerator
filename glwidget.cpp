@@ -20,6 +20,7 @@ GLWidget::GLWidget(QWidget *parent)
     mYTranslate = 0;
     mZTranslate = 0;
     mScale = 0.75;
+    city = NULL;
 }
 GLWidget::~GLWidget()
 {
@@ -40,7 +41,7 @@ void GLWidget::initializeGL()
     makeCurrent();
 
     //Definition de la couleur du fond
-    glClearColor(0.8f, 1.0f, 1.0f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     // Augmentation de la qualité du calcul de perspective
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     // Choix du shader
@@ -102,100 +103,20 @@ void GLWidget::drawObject()
 
     float m_r = 1.0;
     glColor3f(1,0,0);
-    glBegin(GL_QUADS);
-        glNormal3d(0.0,0.0,1.0);
-        glVertex3d(-m_r,  m_r, m_r);
-        glVertex3d(-m_r, -m_r, m_r);
-        glVertex3d( m_r, -m_r, m_r);
-        glVertex3d( m_r,  m_r, m_r);
-    glEnd();
-    glBegin(GL_QUADS);
-        glNormal3d(0.0,0.0,-1.0);
-        glVertex3d(  m_r,  m_r, -m_r);
-        glVertex3d(  m_r, -m_r, -m_r);
-        glVertex3d( -m_r, -m_r, -m_r);
-        glVertex3d( -m_r,  m_r, -m_r);
-    glEnd();
-    glBegin(GL_QUADS);
-        glNormal3d(1.0,0.0,0);
-        glVertex3d( m_r, m_r, m_r);
-        glVertex3d( m_r, -m_r, m_r);
-        glVertex3d( m_r, -m_r, -m_r);
-        glVertex3d( m_r, m_r, -m_r);
-    glEnd();
-    glBegin(GL_QUADS);
-        glNormal3d(-1.0,0.0,0);
-        glVertex3d( -m_r, m_r, m_r);
-        glVertex3d( -m_r, m_r, -m_r);
-        glVertex3d( -m_r, -m_r, -m_r);
-        glVertex3d( -m_r, -m_r, m_r);
-    glEnd();
-    glBegin(GL_QUADS);
-        glNormal3d(0.0,1.0,0);
-        glVertex3d( -m_r, -m_r, m_r);
-        glVertex3d( -m_r, -m_r, -m_r);
-        glVertex3d( m_r, -m_r, -m_r);
-        glVertex3d( m_r, -m_r, m_r);
-    glEnd();
-    glBegin(GL_QUADS);
-        glNormal3d(0.0,-1.0,0);
-        glVertex3d( -m_r, m_r, m_r);
-        glVertex3d( m_r, m_r, m_r);
-        glVertex3d( m_r, m_r, -m_r);
-        glVertex3d( -m_r, m_r, -m_r);
-    glEnd();
 
-    //Ensuite les bords en noir
-    qglColor(Qt::black);
-    glLineWidth(3.0f);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glBegin(GL_QUADS);
-        glNormal3d(0.0,0.0,1.0);
-        glVertex3d(-m_r,  m_r, m_r);
-        glVertex3d(-m_r, -m_r, m_r);
-        glVertex3d( m_r, -m_r, m_r);
-        glVertex3d( m_r,  m_r, m_r);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glNormal3d(0.0,0.0,-1.0);
-        glVertex3d(  m_r,  m_r, -m_r);
-        glVertex3d(  m_r, -m_r, -m_r);
-        glVertex3d( -m_r, -m_r, -m_r);
-        glVertex3d( -m_r,  m_r, -m_r);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glNormal3d(1.0,0.0,0);
-        glVertex3d( m_r, m_r, m_r);
-        glVertex3d( m_r, -m_r, m_r);
-        glVertex3d( m_r, -m_r, -m_r);
-        glVertex3d( m_r, m_r, -m_r);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glNormal3d(-1.0,0.0,0);
-        glVertex3d( -m_r, m_r, m_r);
-        glVertex3d( -m_r, m_r, -m_r);
-        glVertex3d( -m_r, -m_r, -m_r);
-        glVertex3d( -m_r, -m_r, m_r);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glNormal3d(0.0,1.0,0);
-        glVertex3d( -m_r, -m_r, m_r);
-        glVertex3d( -m_r, -m_r, -m_r);
-        glVertex3d( m_r, -m_r, -m_r);
-        glVertex3d( m_r, -m_r, m_r);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glNormal3d(0.0,-1.0,0);
-        glVertex3d( -m_r, m_r, m_r);
-        glVertex3d( m_r, m_r, m_r);
-        glVertex3d( m_r, m_r, -m_r);
-        glVertex3d( -m_r, m_r, -m_r);
-    glEnd();
+    List<Element*> *t = city->getRoadList();
+    t->start();
+    while(!t->isAtTheEnd())
+    {
+        Element *e = t->getCurrentElement();
+        glBegin(GL_QUADS);
+        glVertex3f(e->getX1(), e->getY1(), 0);
+        glVertex3f(e->getX1(), e->getY2(), 0);
+        glVertex3f(e->getX2(), e->getY2(), 0);
+        glVertex3f(e->getX2(), e->getY1(), 0);
+        glEnd();
+        t->next();
+    }
 }
 void GLWidget::paintGL()
 {
@@ -219,7 +140,8 @@ void GLWidget::paintGL()
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
     //Dessine les objects dans la scene
-    drawObject();
+    if(city!=NULL)
+        drawObject();
 
     glPopMatrix();
 }
