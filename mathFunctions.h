@@ -56,6 +56,13 @@ inline int max(int a, int b)
     return a;
 }
 
+inline float minf(float a, float b)
+{
+    if(a<b)
+        return a;
+    return b;
+}
+
 // Prend deux flottants en paramètres. Renvoie le plus grand de ces flottants.
 inline float maxf(float a, float b)
 {
