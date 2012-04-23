@@ -19,6 +19,7 @@ public:
 
 public slots:
     void start();
+    void help();
     void minBlockSizeChanged(int x);
 
 private:
