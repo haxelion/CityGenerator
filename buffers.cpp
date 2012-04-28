@@ -71,12 +71,13 @@ void Buffers::generateElementBuffer(List<Block*> *BlockList)
     float *vertexRoof = new float [4*5*nombreBuilding];
     float *indiceRoof = new float [6*nombreBuilding];
 
-
+    int i=0; // Pour les jardins
+    int j=0; // Pour les buildings
+    int k=0; // Pour les toits
     while (!BlockList->isAtTheEnd())
     {
         List<Element*> *l = BlockList->getCurrentElement()->getElementList();
-        int i=0; // Pour les jardins
-        int j=0; // Pour les buildings
+
         while (!l->isAtTheEnd())
         {
             if(l->getCurrentElement()->getType() == BUILDING)
