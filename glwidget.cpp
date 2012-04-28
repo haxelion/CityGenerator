@@ -12,7 +12,7 @@ GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     setFocus();
-    mFov = 60.0f;
+    mFov = 1.0f;
     mXRotate = 0;
     mYRotate = 0;
     mZRotate = 0;
@@ -21,9 +21,17 @@ GLWidget::GLWidget(QWidget *parent)
     mZTranslate = 0;
     mScale = 0.75;
     city = NULL;
+    for (int i = 0; i < 4; i++)
+    {
+        GLWidget.texture[i]=0;
+    }
 }
 GLWidget::~GLWidget()
 {
+    for (int i = 0; i < 4; i++)
+    {
+        glDeleteTextures(1, texture[i]);;
+    }
 }
 
 QSize GLWidget::minimumSizeHint() const
@@ -39,29 +47,17 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 {
     makeCurrent();
-
+    glewInit();
     //Definition de la couleur du fond
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.8f, 1.0f, 1.0f, 0.01f);
     // Augmentation de la qualité du calcul de perspective
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    // Choix du shader
-    glShadeModel(GL_SMOOTH);
+    // Choix du shader;
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
-
-    //Paramètre des l'éclairage
-    GLfloat lightAmbient[] = {0.5f, 0.5f, 0.5f, 1.0f};
-    GLfloat lightDiffuse[] = {0.7f, 0.7f, 0.7f, 1.0f};
-    GLfloat lightSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     setView();
 }
@@ -179,14 +175,14 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 
     switch(event->modifiers())
     {
-        case Qt::ShiftModifier :
-            mFov = max(mFov * powf(1.2f, notch), 10.0f);
-            mFov = min(mFov, 90.0f);
-            setView();
-            break;
-        default:
-            mScale *= pow(1.2f, -notch);
-            break;
+    case Qt::ShiftModifier :
+        mFov = max(mFov * powf(1.2f, notch), 10.0f);
+        mFov = min(mFov, 90.0f);
+        setView();
+        break;
+    default:
+        mScale *= pow(1.2f, -notch);
+        break;
     }
     update();
 }
@@ -196,26 +192,26 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
 {
     switch(event->key())
     {
-        case Qt::Key_Down:
-            mYTranslate -= 0.5;
-            break;
-        case Qt::Key_Up :
-            mYTranslate += 0.5;
-            break;
-        case Qt::Key_Left:
-            mXTranslate -= 0.5;
-            break;
-        case Qt::Key_Right :
-            mXTranslate += 0.5;
-            break;
-        case Qt::Key_PageDown :
-            mZTranslate -= 0.5;
-            break;
-        case Qt::Key_PageUp:
-            mZTranslate += 0.5;
-            break;
-        default:
-            break;
+    case Qt::Key_Down:
+        mYTranslate -= 0.5;
+        break;
+    case Qt::Key_Up :
+        mYTranslate += 0.5;
+        break;
+    case Qt::Key_Left:
+        mXTranslate -= 0.5;
+        break;
+    case Qt::Key_Right :
+        mXTranslate += 0.5;
+        break;
+    case Qt::Key_PageDown :
+        mZTranslate -= 0.5;
+        break;
+    case Qt::Key_PageUp:
+        mZTranslate += 0.5;
+        break;
+    default:
+        break;
     }
     update();
 }
@@ -254,3 +250,23 @@ void GLWidget::setZRotation(int angle)
         updateGL();
     }
 }
+
+void GLWidget::loadTexture(const char textureName, int place)
+{
+
+    if (texture[place]==0)
+        glDeleteTextures(1, texture[place]);
+    glDeleteTextures();
+    QImage Texture;
+    QImage TempTexture;
+    TempTexture.load(textureName);
+    Texture = GLWidget.convertToGLFormat(TempTexture);
+    glGenTextures( 1, GLWidget.texture[place] );
+    glBindTexture( GL_TEXTURE_2D, texture[place] );
+    glTexImage2D( GL_TEXTURE_2D, 0, 3, Texture.width(), Texture.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, Texture.bits() );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+}
+
+
+

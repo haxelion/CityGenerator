@@ -14,7 +14,10 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     glwidget.cpp \
     city.cpp \
-    block.cpp
+    block.cpp \
+    buffers.cpp \
+    glew.c \
+    shaders.cpp
 
 HEADERS  += mainwindow.h \
     glwidget.h \
@@ -24,6 +27,12 @@ HEADERS  += mainwindow.h \
     zone.h \
     list.h \
     mathFunctions.h \
-    zone.h
+    zone.h \
+    shaders.h \
+    buffers.h \
+    glm.hpp \
+    GL/wglew.h \
+    GL/glxew.h \
+    GL/glew.h
 
 FORMS    += mainwindow.ui

@@ -3,6 +3,9 @@
 
 #include <QGLWidget>
 #include "city.h"
+#include <QString>
+#include <QImage>
+#include "glm.hpp"
 //#include "model.h"
 
 class GLWidget : public QGLWidget
@@ -16,6 +19,7 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
     void setCity(City *city) {this->city = city;}
+    void loadTexture (Qstring textureName );
 
 public slots:
     void setXRotation(int angle);
@@ -53,8 +57,12 @@ private:
     float mFarRatio;
     float mNearRatio;
     City *city;
-
+    GLuint texture[4];
     QPoint lastPos;
+
+    glm::mat4 projectionMatrix, viewMatrix;
+    GLuint projectionMatrixUL, viewMatrixUL;
+
 };
 
 #endif
