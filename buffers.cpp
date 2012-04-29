@@ -11,22 +11,26 @@ void Buffers::generateRoadBuffer(List<Element*> *roadList)
     roadList->start();
     for(int i=0;!roadList->isAtTheEnd(); i+=20)
     {
-        // Pour le VBO des routes
+        // Pour le VBO des routes, toutes les "5 lignes" représente une demi face = 3 vertices (3 première lignes)
+        // les coordonnées pour la texture (2 dernière lignes). Cette convention sera respectée pour chaque VBO
         vertex[i] = roadList->getCurrentElement()->getX1();
         vertex[i+1] = roadList->getCurrentElement()->getY1();
         vertex[i+2] = 0;
         vertex[i+3] = 0;
         vertex[i+4] = 0;
+
         vertex[i+5] = roadList->getCurrentElement()->getX1();
         vertex[i+6] = roadList->getCurrentElement()->getY2();
         vertex[i+7] = 0;
         vertex[i+8] = 0;
         vertex[i+9] = 1;
+
         vertex[i+10] = roadList->getCurrentElement()->getX2();
         vertex[i+11] = roadList->getCurrentElement()->getY2();
         vertex[i+12] = 0;
         vertex[i+13] = 1;
         vertex[i+14] = 1;
+
         vertex[i+15] = roadList->getCurrentElement()->getX2();
         vertex[i+16] = roadList->getCurrentElement()->getY1();
         vertex[i+17] = 0;
@@ -82,6 +86,88 @@ void Buffers::generateElementBuffer(List<Block*> *BlockList)
         {
             if(l->getCurrentElement()->getType() == BUILDING)
             {
+                // Pour le VBO des buildings
+                //Face (carré) 1
+                vertex[i] = l->getCurrentElement()->getX1() ;
+                vertex[i+1] = l->getCurrentElement()->getY1();
+                vertex[i+2] = 0;
+                vertex[i+3] = ;
+                vertex[i+4] = ;
+
+                vertex[i+5] = l->getCurrentElement()->getX1();
+                vertex[i+6] = l->getCurrentElement()->getY2();
+                vertex[i+7] = 0;
+                vertex[i+8] = ;
+                vertex[i+9] = ;
+
+                vertex[i+10] = l->getCurrentElement()->getX1();
+                vertex[i+11] = l->getCurrentElement()->getY2();
+                vertex[i+12] = l->getCurrentElement()->getHeight();
+                vertex[i+13] = ;
+                vertex[i+14] = ;
+
+                vertex[i+15] = l->getCurrentElement()->getX1();
+                vertex[i+16] = l->getCurrentElement()->getY1();
+                vertex[i+17] = l->getCurrentElement()->getHeight();
+                vertex[i+18] = ;
+                vertex[i+19] = ;
+
+                //Face 2
+                vertex[i+20] = l->getCurrentElement()->getX1() ;
+                vertex[i+21] = l->getCurrentElement()->getY2();
+                vertex[i+22] = 0;
+                vertex[i+23] = ;
+                vertex[i+24] = ;
+
+                vertex[i+25] = l->getCurrentElement()->getX1();
+                vertex[i+26] = l->getCurrentElement()->getY2();
+                vertex[i+27] = l->getCurrentElement()->getHeight();
+                vertex[i+28] = ;
+                vertex[i+29] = ;
+
+                vertex[i+30] = ;
+                vertex[i+31] = ;
+                vertex[i+32] = ;
+                vertex[i+33] = ;
+                vertex[i+34] = ;
+
+                vertex[i+35] = ;
+                vertex[i+36] = ;
+                vertex[i+37] = ;
+                vertex[i+38] = ;
+                vertex[i+39] = ;
+
+                //Pour l'IBO des buildings
+
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]=;
+
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]=;
+
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]= ;
+                indice[i]=;
+
+                indice[i]=;
+                indice[i]=;
+                indice[i]=;
+                indice[i]=;
+                indice[i]=;
+                indice[i]=;
+
+
 
             }
             if(l->getCurrentElement()->getType()== GARDEN)
@@ -92,16 +178,19 @@ void Buffers::generateElementBuffer(List<Block*> *BlockList)
                 vertex[i+2] = 0;
                 vertex[i+3] = 0;
                 vertex[i+4] = 0;
+
                 vertex[i+5] = l->getCurrentElement()->getX1();
                 vertex[i+6] = l->getCurrentElement()->getY2();
                 vertex[i+7] = 0;
                 vertex[i+8] = 0;
                 vertex[i+9] = 1;
+
                 vertex[i+10] = l->getCurrentElement()->getX2();
                 vertex[i+11] = l->getCurrentElement()->getY2();
                 vertex[i+12] = 0;
                 vertex[i+13] = 1;
                 vertex[i+14] = 1;
+
                 vertex[i+15] = l->getCurrentElement()->getX2();
                 vertex[i+16] = l->getCurrentElement()->getY1();
                 vertex[i+17] = 0;
