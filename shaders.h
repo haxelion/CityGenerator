@@ -8,6 +8,7 @@ class Shaders
 {
 public:
     Shaders();
+    ~Sharders();
     void loadShader(const char *path, GLenum shaderType);
     void compileShader();
     GLuint getShader() {return shader;}

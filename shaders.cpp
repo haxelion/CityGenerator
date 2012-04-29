@@ -3,6 +3,11 @@
 
 Shaders::Shaders()
 {
+    glDetachShader(shader, fragmentShader);
+    glDetachShader(shader, vertexShader);
+    glDeleteShader(fragmentShader);
+    glDeleteShader(vertexShader);
+    glDeleteProgram(shader);
 }
 
 void shaders::loadShader(const char *path, GLenum shaderType)

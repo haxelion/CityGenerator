@@ -10,6 +10,7 @@ class Buffers
 {
 public:
     Buffers();
+    ~Buffers();
     void generateRoadBuffer();
     void generateElementBuffer();
     GLuint getRoadVBA() {return roadVBA;}
@@ -20,7 +21,7 @@ public:
 private:
     GLuint roadVBO, roadVBA, roadIBO;
     GLuint roofVBO, roofVBA, roofIBO;
-    GLuint buildingVBO, buildingVBA, buidlingIBO;
+    GLuint buildingVBO, buildingVBA, buildingIBO;
     GLuint gardenVBO, gardenVBA, gardenIBO;
 };
 
