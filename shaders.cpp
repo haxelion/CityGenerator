@@ -1,7 +1,14 @@
 #include "shaders.h"
 #include <QFile>
 
-Shaders::Shaders()
+Shaders::~Shaders()
+{
+    vertexShader = 0;
+    fragmentShader = 0;
+    shader = 0;
+}
+
+Shaders::~Shaders()
 {
     glDetachShader(shader, fragmentShader);
     glDetachShader(shader, vertexShader);
@@ -10,7 +17,7 @@ Shaders::Shaders()
     glDeleteProgram(shader);
 }
 
-void shaders::loadShader(const char *path, GLenum shaderType)
+void Shaders::loadShader(const char *path, GLenum shaderType)
 {
     GLuint shaderID = 0;
     QFile file(path);
@@ -26,9 +33,17 @@ void shaders::loadShader(const char *path, GLenum shaderType)
     file.close();
 
     if(shaderType == GL_FRAGMENT_SHADER)
+    {
+        if(fragmentShader != 0)
+            glDeleteShader(fragmentShader);
         fragmentShader = shaderID;
+    }
     else if(shaderType == GL_VERTEX_SHADER)
+    {
+        if(vertexShader != 0)
+            glDeleteShader(vertexShader);
         vertexShader = shaderID;
+    }
 }
 
 void shaders::compileShader()

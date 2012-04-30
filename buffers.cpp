@@ -26,69 +26,27 @@ void Buffers::generateRoadBuffer(List<Element*> *roadList)
     float *vertex = new float [5*4*roadList->getSize()];
     float *indice = new float [6*roadList->getSize()];
     roadList->start();
-
-    int i=0; // Pour les VBO des routes.
-    int j=0; // Pour les IBO des routes.
-
-    while(!roadList->isAtTheEnd())
+    for(int i = 0;!roadList->isAtTheEnd();i++)
     {
-        // Pour le VBO des routes, toutes les "5 lignes" représente 3 vertices (3 première lignes) ainsi que
-        // les coordonnees pour la texture (2 dernière lignes). Cette convention sera respectée pour chaque VBO.
-        vertex[i] = roadList->getCurrentElement()->getX1();
-        vertex[i+1] = roadList->getCurrentElement()->getY1();
-        vertex[i+2] = 0;
-        vertex[i+3] = 0;
-        vertex[i+4] = 0;
-
-        vertex[i+5] = roadList->getCurrentElement()->getX1();
-        vertex[i+6] = roadList->getCurrentElement()->getY2();
-        vertex[i+7] = 0;
-        vertex[i+8] = 0;
-        vertex[i+9] = 1;
-
-        vertex[i+10] = roadList->getCurrentElement()->getX2();
-        vertex[i+11] = roadList->getCurrentElement()->getY2();
-        vertex[i+12] = 0;
-        vertex[i+13] = 1;
-        vertex[i+14] = 1;
-
-        vertex[i+15] = roadList->getCurrentElement()->getX2();
-        vertex[i+16] = roadList->getCurrentElement()->getY1();
-        vertex[i+17] = 0;
-        vertex[i+18] = 1;
-        vertex[i+19] = 0;
-
-        // Pour le IBO des routes.
-        // Chaque bloc de 3 ligne représente une face (triangulaire).
-        // La même convention sera utilisé pour tous les IBO.
-
-        indice[j]= j;
-        indice[j+1]= j+1;
-        indice[j+2]= j+2;
-
-        indice[j+3]= j;
-        indice[j+4]= j+2;
-        indice[j+5]= j+3;
-
-
-        i+=20;
-        j+=6;
+        makeVertex(vertex+(i*4)*5, roadList->getCurrentElement()->getX1(), roadList->getCurrentElement()->getY1(), 0, 0, 0);
+        makeVertex(vertex+(i*4+1)*5, roadList->getCurrentElement()->getX1(), roadList->getCurrentElement()->getY2(), 0, 0, 1);
+        makeVertex(vertex+(i*4+2)*5, roadList->getCurrentElement()->getX2(), roadList->getCurrentElement()->getY2(), 0, 1, 1);
+        makeVertex(vertex+(i*4+3)*5, roadList->getCurrentElement()->getX2(), roadList->getCurrentElement()->getY1(), 0, 1, 0);
+        makeQuadIndices(indice+i*6);
         roadList->next();
     }
 
     // Création VBA
     glGenVertexArrays(1, &roadVBA);
     glBindVertexArray(roadVBA);
-
     //Generation VBO.
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glGenBuffers(1, &roadVBO);
     glBindBuffer(GL_ARRAY_BUFFER, roadVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
-    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE, 5*4*roadList->getSize(), (GLvoid*)0);
-    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 5*4*roadList->getSize(), (GLvoid*)(3*sizeof(float)));
-
+    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE, 5*sizeof(float), (GLvoid*)0);
+    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 5*sizeof(float), (GLvoid*)(3*sizeof(float)));
     //Generation IBO.
     glGenBuffers(1, &roadIBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, roadIBO);
@@ -358,52 +316,53 @@ void Buffers::generateElementBuffer(List<Block*> *BlockList)
         }
         BlockList->next();
     }
-    // Generation VBA
+
+    // Generation roofVBA
     glGenVertexArrays(1, &roofVBA);
     glBindVertexArray(roofVBA);
-
-    glGenVertexArrays(1, &buildingVBA);
-    glBindVertexArray(buildingVBA);
-
-    glGenVertexArrays(1, &gardenVBA);
-    glBindVertexArray(gardenVBA);
-
-    //Generation VBO
+    //Generation roofVBO
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glGenBuffers(1, &roofVBO);
     glBindBuffer(GL_ARRAY_BUFFER, roofVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexRoof), vertexRoof, GL_STATIC_DRAW);
-    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE,6*buildingNumber , (GLvoid*)0);
-    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 6*buildingNumber, (GLvoid*)(3*sizeof(float)));
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glGenBuffers(1, &buildingVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, buildingVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBuilding), vertexBuilding, GL_STATIC_DRAW);
-    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE, 16*5*buildingNumber, (GLvoid*)0);
-    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 16*5*buildingNumber, (GLvoid*)(3*sizeof(float)));
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glGenBuffers(1, &gardenVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, gardenVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexGarden), vertexGarden, GL_STATIC_DRAW);
-    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE, 5*4*gardenNumber, (GLvoid*)0);
-    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 5*4*gardenNumber, (GLvoid*)(3*sizeof(float)));
-
-    //Generation IBO
+    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE,6*sizeof(float) , (GLvoid*)0);
+    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)(3*sizeof(float)));
+    //Generation roofIBO
     glGenBuffers(1, &roofIBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, roofIBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(indiceRoof), indiceRoof, GL_STATIC_DRAW);
     glBindVertexArray(0);
 
+    // Generation buildingVBA
+    glGenVertexArrays(1, &buildingVBA);
+    glBindVertexArray(buildingVBA);
+    // Generation buildingVBA
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glGenBuffers(1, &buildingVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, buildingVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBuilding), vertexBuilding, GL_STATIC_DRAW);
+    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)0);
+    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)(3*sizeof(float)));
+    //Generation buildingIBO
     glGenBuffers(1, &buildingIBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buildingIBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(indiceBuilding), indiceBuilding, GL_STATIC_DRAW);
     glBindVertexArray(0);
 
+    // Generation gardenVBA
+    glGenVertexArrays(1, &gardenVBA);
+    glBindVertexArray(gardenVBA);
+    // Generation gardenVBO
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glGenBuffers(1, &gardenVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, gardenVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexGarden), vertexGarden, GL_STATIC_DRAW);
+    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)0);
+    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)(3*sizeof(float)));
+    //Generation gardenIBO
     glGenBuffers(1, &gardenIBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gardenIBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(indiceGarden), indiceGarden, GL_STATIC_DRAW);
