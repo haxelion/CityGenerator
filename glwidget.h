@@ -28,7 +28,7 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
     void setCity(City *city);
-    void loadTexture (QString textureName );
+    void loadTexture (QString textureName);
 
 public slots:
     void setXRotation(int angle);
@@ -61,6 +61,20 @@ private:
     Buffers *buffers;
     Shaders *shaders;
     GLuint texture[4];
+    int mXRotate;
+    int mYRotate;
+    int mZRotate;
+    float mScale;
+    int place;
+    float mXTranslate;
+    float mYTranslate;
+    float mZTranslate;
+    float mFarRatio;
+    float mNearRatio;
+    GLuint textureRoof;
+    GLuint textureRoad;
+    GLuint textureBuilding;
+    GLuint textureGarden;
     QPoint lastPos;
 
     glm::mat4 projectionMatrix, viewMatrix;
