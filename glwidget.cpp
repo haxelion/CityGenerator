@@ -23,7 +23,7 @@ GLWidget::GLWidget(QWidget *parent)
     city = NULL;
     for (int i = 0; i < 4; i++)
     {
-        GLWidget.texture[i]=0;
+        texture[i]=0;
     }
 }
 GLWidget::~GLWidget()
@@ -251,12 +251,11 @@ void GLWidget::setZRotation(int angle)
     }
 }
 
-void GLWidget::loadTexture(const char textureName, int place)
+void GLWidget::loadTexture(QString textureName, int place)
 {
 
     if (texture[place]==0)
         glDeleteTextures(1, texture[place]);
-    glDeleteTextures();
     QImage Texture;
     QImage TempTexture;
     TempTexture.load(textureName);
