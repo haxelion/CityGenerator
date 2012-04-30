@@ -19,7 +19,7 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
     void setCity(City *city) {this->city = city;}
-    void loadTexture (Qstring textureName );
+    void loadTexture (QString textureName );
 
 public slots:
     void setXRotation(int angle);
