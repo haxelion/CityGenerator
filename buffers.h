@@ -23,7 +23,18 @@ private:
     GLuint roofVBO, roofVBA, roofIBO;
     GLuint buildingVBO, buildingVBA, buildingIBO;
     GLuint gardenVBO, gardenVBA, gardenIBO;
+    int gardenNumber;
+    int buildingNumber;
 
+    void countElements(List<Block*> *b);
+    void makeBuildingVBO(float *vertices, Element *building);
+    void makeGardenVBO(float *vertices, Element *garden);
+    void makeRoadVBO(float *vertices, Element *road);
+    void makeRoofVBO(float *vertices, Element *building);
+    void makeBuildingIndices(int *indices, int i);
+    void VBAGeneration (GLuint VBA);
+    void VBOGeneration (GLuint VBO, float* vertices);
+    void IBOGeneration(GLuint IBO, float* indices);
     void makeVertex(float *vertex, float x, float y, float z, float u, float v)
     {
         vertex[0] = x;
