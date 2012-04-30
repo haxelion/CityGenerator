@@ -1,25 +1,16 @@
-#include <QtGui>
-#include <QtOpenGL>
-
-#include <math.h>
 #include "glwidget.h"
-#include <GL/glu.h>
-
-#define max(x,y) ( x > y ) ? x : y
-#define min(x,y) ( x < y ) ? x : y
 
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
+    this->format().setVersion(3,3);
+    this->format().setAlpha(true);
     setFocus();
-    mFov = 1.0f;
-    mXRotate = 0;
-    mYRotate = 0;
-    mZRotate = 0;
-    mXTranslate = -50;
-    mYTranslate = -50;
-    mZTranslate = 0;
-    mScale = 0.75;
+
+    buffers = new Buffers();
+    shaders = new Shaders();
+
+    yFOV = 1.04;
     city = NULL;
     for (int i = 0; i < 4; i++)
     {
@@ -30,7 +21,8 @@ GLWidget::~GLWidget()
 {
     for (int i = 0; i < 4; i++)
     {
-        glDeleteTextures(1, texture[i]);;
+        if(textures[i] !=0)
+            glDeleteTextures(1, texture[i]);;
     }
 }
 
@@ -61,58 +53,23 @@ void GLWidget::initializeGL()
 
     setView();
 }
+
+void GLWidget::setCity(City *city)
+{
+    this->city = 0;
+    delete buffers;
+    buffers = new Buffers(city);
+    this->city = city;
+}
+
 void GLWidget::setView()
 {
-    mFarRatio = 100.0f;
-    mNearRatio = 100.0f;
-
-    //Définition du champ de vue
-    glViewport(0, 0, this->width(), this->height());
-
-    //Paramètres de la caméra
-    GLfloat aspect = (GLfloat)this->width()/this->height();
-    float viewRatio = 1.75f;
-    float cameraDistance = (mFov == 5) ? 1000 : viewRatio / tanf(M_PI*mFov/540.0f);
-    float nearPlane = max(cameraDistance - 2.0f * mNearRatio, cameraDistance * 0.1f);
-    float farPlane =  cameraDistance + 10.0f * mFarRatio;
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    //Défintion du type de perspective appliquée
-    if(mFov==10)
-        glOrtho(-viewRatio * aspect, viewRatio * aspect, -viewRatio, viewRatio, cameraDistance - 10.f * mNearRatio, cameraDistance + 10.0f * mFarRatio);
-    else
-        gluPerspective(mFov, aspect, nearPlane, farPlane);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0, 0, cameraDistance, 0, 0, 0, 0, 1, 0);
+    projectionMatrix = glm::perspective(mFov, this->width()/(float)this->height(),1, 100);
 }
 
 void GLWidget::drawObject()
 {
-    glPushMatrix();
 
-    //Dessin des objets à afficher
-    //D'abord,les faces pleines
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    float m_r = 1.0;
-    glColor3f(1,0,0);
-
-    List<Element*> *t = city->getRoadList();
-    t->start();
-    while(!t->isAtTheEnd())
-    {
-        Element *e = t->getCurrentElement();
-        glBegin(GL_QUADS);
-        glVertex3f(e->getX1(), e->getY1(), 0);
-        glVertex3f(e->getX1(), e->getY2(), 0);
-        glVertex3f(e->getX2(), e->getY2(), 0);
-        glVertex3f(e->getX2(), e->getY1(), 0);
-        glEnd();
-        t->next();
-    }
 }
 void GLWidget::paintGL()
 {
