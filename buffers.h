@@ -3,16 +3,15 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <list.h>
-#include <element.h>
-#include <block.h>
+#include "element.h"
+#include "block.h"
+#include "city.h"
 
 class Buffers
 {
 public:
-    Buffers();
+    Buffers(City *city);
     ~Buffers();
-    void generateRoadBuffer();
-    void generateElementBuffer();
     GLuint getRoadVBA() {return roadVBA;}
     GLuint getRoofVBA() {return roofVBA;}
     GLuint getBuildingVBA() {return buildingVBA;}
@@ -26,6 +25,8 @@ private:
     int gardenNumber;
     int buildingNumber;
 
+    void generateRoadBuffer(List<Element*> *roadList);
+    void generateElementBuffer(List<Block*> *BlockList);
     void countElements(List<Block*> *b);
     void makeBuildingVBO(float *vertices, Element *building);
     void makeGardenVBO(float *vertices, Element *garden);

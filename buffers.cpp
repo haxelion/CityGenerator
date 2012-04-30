@@ -1,7 +1,9 @@
 #include "buffers.h"
 
-Buffers::Buffers()
+Buffers::Buffers(City *city)
 {
+    generateRoadBuffer(city->getRoadList());
+    generateElementBuffer(city->getBlockList());
 }
 
 Buffers::~Buffers()
