@@ -20,6 +20,58 @@ Buffers::~Buffers()
     glDeleteVertexArrays(1, &gardenVBA);
 }
 
+void Buffers::makeVertex(float *vertex, float x, float y, float z, float u, float v)
+{
+    vertex[0] = x;
+    vertex[1] = y;
+    vertex[2] = z;
+    vertex[3] = u;
+    vertex[4] = v;
+}
+
+void Buffers::makeQuadIndices(int *indices, int i)
+{
+    indices[0]= i;
+    indices[1]= i+1;
+    indices[2]= i+2;
+    indices[3]= i;
+    indices[4]= i+2;
+    indices[5]= i+3;
+}
+
+void Buffers::makeTriangleIndices(int *indices, int i, int j, int k)
+{
+    indices[0]= i;
+    indices[1]= j;
+    indices[2]= k;
+}
+
+void Buffers::VBAGeneration (GLuint VBA)
+{
+    glGenVertexArrays(1, &VBA);
+    glBindVertexArray(VBA);
+}
+
+void Buffers::VBOGeneration (GLuint VBO, float* vertices)
+{
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE,6*sizeof(float) , (GLvoid*)0);
+    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)(3*sizeof(float)));
+}
+
+void Buffers::IBOGeneration(GLuint IBO, float* indices)
+{
+    glGenBuffers(1, &IBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBindVertexArray(0);
+}
+
+
 void Buffers::generateRoadBuffer(List<Element*> *roadList)
 {
 
@@ -81,292 +133,88 @@ void Buffers::generateElementBuffer(List<Block*> *BlockList)
     float *vertexRoof = new float [4*5*buildingNumber];
     float *indiceRoof = new float [6*buildingNumber];
 
-    int i=0; // Pour les VBO des jardins.
-    int j=0; // Pour les VBO buildings.
-    int k=0; // Pour les VBO toits.
-    int k2=0; //Pour les IBO des buildings.
-    int m=0; // Pour les IBO jardins.
-    int n=0; // Pour les IBO toits.
+    int i=0; // Pour les des jardins.
+    int j=0; // Pour les buildings et toits
 
     // Remplissage des tableaux qui formeront le contenu des VBO et IBO.
     while (!BlockList->isAtTheEnd())
     {
         List<Element*> *l = BlockList->getCurrentElement()->getElementList();
-
         while (!l->isAtTheEnd())
         {
             if(l->getCurrentElement()->getType() == BUILDING)
             {
                 // Pour le VBO des buildings.
                 // Face 1.
-                vertexBuilding[j] = l->getCurrentElement()->getX1() ;
-                vertexBuilding[j+1] = l->getCurrentElement()->getY1();
-                vertexBuilding[j+2] = 0;
-                vertexBuilding[j+3] = 0;
-                vertexBuilding[j+4] = 0;
-
-                vertexBuilding[j+5] = l->getCurrentElement()->getX1();
-                vertexBuilding[j+6] = l->getCurrentElement()->getY2();
-                vertexBuilding[j+7] = 0;
-                vertexBuilding[j+8] = 0;
-                vertexBuilding[j+9] = 1;
-
-                vertexBuilding[j+10] = l->getCurrentElement()->getX1();
-                vertexBuilding[j+11] = l->getCurrentElement()->getY2();
-                vertexBuilding[j+12] = l->getCurrentElement()->getHeight();
-                vertexBuilding[j+13] = 1;
-                vertexBuilding[j+14] = 1;
-
-                vertexBuilding[j+15] = l->getCurrentElement()->getX1();
-                vertexBuilding[j+16] = l->getCurrentElement()->getY1();
-                vertexBuilding[j+17] = l->getCurrentElement()->getHeight();
-                vertexBuilding[j+18] = 1;
-                vertexBuilding[j+19] = 0;
-
+                float h = l->getCurrentElement()->getHeight();
+                makeVertex(vertexBuilding+(j*4)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY1(), 0, 0, 0);
+                makeVertex(vertexBuilding+(j*4+1)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY2(), 0, 0, 1);
+                makeVertex(vertexBuilding+(j*4+2)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY2(), h, 1, 1);
+                makeVertex(vertexBuilding+(j*4+3)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY1(), h, 1, 0);
                 // Face 2.
-                vertexBuilding[j+20] = l->getCurrentElement()->getX1() ;
-                vertexBuilding[j+21] = l->getCurrentElement()->getY2();
-                vertexBuilding[j+22] = 0;
-                vertexBuilding[j+23] = 0;
-                vertexBuilding[j+24] = 0;
-
-                vertexBuilding[j+25] = l->getCurrentElement()->getX2();
-                vertexBuilding[j+26] = l->getCurrentElement()->getY2();
-                vertexBuilding[j+27] = 0;
-                vertexBuilding[j+28] = 0;
-                vertexBuilding[j+29] = 1;
-
-                vertexBuilding[j+30] = l->getCurrentElement()->getX2();
-                vertexBuilding[j+31] = l->getCurrentElement()->getY2();
-                vertexBuilding[j+32] = l->getCurrentElement()->getHeight();
-                vertexBuilding[j+33] = 1;
-                vertexBuilding[j+34] = 1;
-
-                vertexBuilding[j+35] = l->getCurrentElement()->getX1();
-                vertexBuilding[j+36] = l->getCurrentElement()->getY2();
-                vertexBuilding[j+37] = l->getCurrentElement()->getHeight();
-                vertexBuilding[j+38] = 1;
-                vertexBuilding[j+39] = 0;
-
+                makeVertex(vertexBuilding+(j*4+4)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY2(), 0, 0, 0);
+                makeVertex(vertexBuilding+(j*4+5)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY2(), 0, 0, 1);
+                makeVertex(vertexBuilding+(j*4+6)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY2(), h, 1, 1);
+                makeVertex(vertexBuilding+(j*4+7)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY2(), h, 1, 0);
                 // Face 3.
-                vertexBuilding[j+40] = l->getCurrentElement()->getX2() ;
-                vertexBuilding[j+41] = l->getCurrentElement()->getY2();
-                vertexBuilding[j+42] = 0;
-                vertexBuilding[j+43] = 0;
-                vertexBuilding[j+44] = 0;
-
-                vertexBuilding[j+45] = l->getCurrentElement()->getX2();
-                vertexBuilding[j+46] = l->getCurrentElement()->getY1();
-                vertexBuilding[j+47] = 0;
-                vertexBuilding[j+48] = 0;
-                vertexBuilding[j+49] = 1;
-
-                vertexBuilding[j+50] = l->getCurrentElement()->getX2();
-                vertexBuilding[j+51] = l->getCurrentElement()->getY1();
-                vertexBuilding[j+52] = l->getCurrentElement()->getHeight();
-                vertexBuilding[j+53] = 1;
-                vertexBuilding[j+54] = 1;
-
-                vertexBuilding[j+55] = l->getCurrentElement()->getX2();
-                vertexBuilding[j+56] = l->getCurrentElement()->getY2();
-                vertexBuilding[j+57] = l->getCurrentElement()->getHeight(;
-                vertexBuilding[j+58] = 1;
-                vertexBuilding[j+59] = 0;
-
-                // Face 4.
-                vertexBuilding[j+60] = l->getCurrentElement()->getX2() ;
-                vertexBuilding[j+61] = l->getCurrentElement()->getY1();
-                vertexBuilding[j+62] = 0;
-                vertexBuilding[j+63] = 0;
-                vertexBuilding[j+64] = 0;
-
-                vertexBuilding[j+65] = l->getCurrentElement()->getX1();
-                vertexBuilding[j+66] = l->getCurrentElement()->getY1();
-                vertexBuilding[j+67] = 0;
-                vertexBuilding[j+68] = 0;
-                vertexBuilding[j+69] = 1;
-
-                vertexBuilding[j+70] = l->getCurrentElement()->getX1();
-                vertexBuilding[j+71] = l->getCurrentElement()->getY1();
-                vertexBuilding[j+72] = l->getCurrentElement()->getHeight();
-                vertexBuilding[j+73] = 1;
-                vertexBuilding[j+74] = 1;
-                vertexBuilding[j+75] = l->getCurrentElement()->getX2();
-                vertexBuilding[j+76] = l->getCurrentElement()->getY1();
-                vertexBuilding[j+77] = l->getCurrentElement()->getHeight();
-                vertexBuilding[j+78] = 1;
-                vertexBuilding[j+79] = 1;
-
-
+                makeVertex(vertexBuilding+(j*4+8)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY2(), 0, 0, 0);
+                makeVertex(vertexBuilding+(j*4+9)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY1(), 0, 0, 1);
+                makeVertex(vertexBuilding+(j*4+10)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY1(), h, 1, 1);
+                makeVertex(vertexBuilding+(j*4+11)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY2(), h, 1, 0);
+                //Face 4
+                makeVertex(vertexBuilding+(j*4+12)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY1(), 0, 0, 0);
+                makeVertex(vertexBuilding+(j*4+13)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY1(), 0, 0, 1);
+                makeVertex(vertexBuilding+(j*4+14)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY1(), h, 1, 1);
+                makeVertex(vertexBuilding+(j*4+15)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY1(), h, 1, 0);
                 //Pour l'IBO des buildings.
-                indiceBuilding[k2]= k2;
-                indiceBuilding[k2]= k2+5;
-                indiceBuilding[k2]= k2+4;
-
-                indiceBuilding[k2]= k2;
-                indiceBuilding[k2]= k2+1;
-                indiceBuilding[k2]= k2+5;
-
-                indiceBuilding[k2]= k2+1;
-                indiceBuilding[k2]= k2+6;
-                indiceBuilding[k2]= k2+5;
-
-                indiceBuilding[k2]= k2+1;
-                indiceBuilding[k2]= k2+2;
-                indiceBuilding[k2]= k2+6;
-
-                indiceBuilding[k2]= k2+2;
-                indiceBuilding[k2]= k2+7;
-                indiceBuilding[k2]= k2+6;
-
-                indiceBuilding[k2]= k2+2;
-                indiceBuilding[k2]= k2+3;
-                indiceBuilding[k2]= k2+7;
-
-                indiceBuilding[k2]= k2+3;
-                indiceBuilding[k2]= k2+4;
-                indiceBuilding[k2]= k2+7;
-
-                indiceBuilding[k2]= k2+3;
-                indiceBuilding[k2]= k2;
-                indiceBuilding[k2]= k2+4;
-
+                makeTriangleIndices(indiceBuilding+(j**8*3,j,j+5,j+4);
+                makeTriangleIndices(indiceBuilding+((j*8)+1)*3,j,j+1,j+5);
+                makeTriangleIndices(indiceBuilding+((j*8)+2)*3,j+1,j+6,j+5);
+                makeTriangleIndices(indiceBuilding+((j*8)+3)*3,j+1,j+2,j+6);
+                makeTriangleIndices(indiceBuilding+((j*8)+4)*3,j+2,j+7,j+6);
+                makeTriangleIndices(indiceBuilding+((j*8)+5)*3,j+2,j+3,j+7);
+                makeTriangleIndices(indiceBuilding+((j*8)+6)*3,j+3,j+4,j+7);
+                makeTriangleIndices(indiceBuilding+((j*8)+7)*3,j+3,j,j+4);
                 // Pour le VBO des toits.
-                vertexRoof[k] = l->getCurrentElement()->getX1();
-                vertexRoof[k+1] = l->getCurrentElement()->getY1();
-                vertexRoof[k+2] = l->getCurrentElement()->getHeight();
-                vertexRoof[k+3] = 0;
-                vertexRoof[k+4] = 0;
-
-                vertexRoof[k+5] = l->getCurrentElement()->getX1();
-                vertexRoof[k+6] = l->getCurrentElement()->getY2();
-                vertexRoof[k+7] = l->getCurrentElement()->getHeight();
-                vertexRoof[k+8] = 0;
-                vertexRoof[k+9] = 1;
-
-                vertexRoof[k+10] = l->getCurrentElement()->getX2();
-                vertexRoof[k+11] = l->getCurrentElement()->getY2();
-                vertexRoof[k+12] = l->getCurrentElement()->getHeight();
-                vertexRoof[k+13] = 1;
-                vertexRoof[k+14] = 1;
-
-                vertexRoof[k+15] = l->getCurrentElement()->getX2();
-                vertexRoof[k+16] = l->getCurrentElement()->getY1();
-                vertexRoof[k+17] = l->getCurrentElement()->getHeight();
-                vertexRoof[k+18] = 1;
-                vertexRoof[k+19] = 0;
-
-
+                makeVertex(vertexRoof+(j*4)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY1(), l->getCurrentElement()->getHeight(), 0, 0);
+                makeVertex(vertexRoof+(j*4+1)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY2(), l->getCurrentElement()->getHeight(), 0, 1);
+                makeVertex(vertexRoof+(j*4+2)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY2(), l->getCurrentElement()->getHeight(), 1, 1);
+                makeVertex(vertexRoof+(j*4+3)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY1(), l->getCurrentElement()->getHeight(), 1, 0);
                 //Pour l'IBO des toits.
+                makeQuadIndices(indiceRoof+6*j);
 
-                indiceRoof[n] = n;
-                indiceRoof[n+1] = n+1;
-                indiceRoof[n+2] = n+2;
-
-                indiceRoof[n+3] = n;
-                indiceRoof[n+4] = n+2;
-                indiceRoof[n+5] = n+3;
-
-                j += 80;
-                k += 20;
-                k2 += 24;
-                n += 6;
+                j++;
             }
             else if(l->getCurrentElement()->getType()== GARDEN)
             {
-                // Pour le VBO des jardins.
-                vertexGarden[i] = l->getCurrentElement()->getX1();
-                vertexGarden[i+1] = l->getCurrentElement()->getY1();
-                vertexGarden[i+2] = 0;
-                vertexGarden[i+3] = 0;
-                vertexGarden[i+4] = 0;
-
-                vertexGarden[i+5] = l->getCurrentElement()->getX1();
-                vertexGarden[i+6] = l->getCurrentElement()->getY2();
-                vertexGarden[i+7] = 0;
-                vertexGarden[i+8] = 0;
-                vertexGarden[i+9] = 1;
-
-                vertexGarden[i+10] = l->getCurrentElement()->getX2();
-                vertexGarden[i+11] = l->getCurrentElement()->getY2();
-                vertexGarden[i+12] = 0;
-                vertexGarden[i+13] = 1;
-                vertexGarden[i+14] = 1;
-
-                vertexGarden[i+15] = l->getCurrentElement()->getX2();
-                vertexGarden[i+16] = l->getCurrentElement()->getY1();
-                vertexGarden[i+17] = 0;
-                vertexGarden[i+18] = 1;
-                vertexGarden[i+19] = 0;
-
+                // Pour le VBO des jardins.                
+                makeVertex(vertexGarden+(i*4)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY1(), 0, 0, 0);
+                makeVertex(vertexGarden+(i*4+1)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY2(), 0, 0, 1);
+                makeVertex(vertexGarden+(i*4+2)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY2(), 0, 1, 1);
+                makeVertex(vertexGarden+(i*4+3)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY1(), 0, 1, 0);
                 //Pour l'IBO des jardins.
+                makeQuadIndices(indiceGarden+m*6);
 
-                indiceGarden[m]= m;
-                indiceGarden[m+1]= m+1;
-                indiceGarden[m+2]= m+2;
-
-                indiceGarden[m+3]= m;
-                indiceGarden[m+4]= m+2;
-                indiceGarden[m+5]= m+3;
-
-                i +=20;
-                m +=6;
+                i++;
+                m++;
             }
             l->next();
         }
         BlockList->next();
     }
 
-    // Generation roofVBA
-    glGenVertexArrays(1, &roofVBA);
-    glBindVertexArray(roofVBA);
-    //Generation roofVBO
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glGenBuffers(1, &roofVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, roofVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexRoof), vertexRoof, GL_STATIC_DRAW);
-    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE,6*sizeof(float) , (GLvoid*)0);
-    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)(3*sizeof(float)));
-    //Generation roofIBO
-    glGenBuffers(1, &roofIBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, roofIBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(indiceRoof), indiceRoof, GL_STATIC_DRAW);
-    glBindVertexArray(0);
-
-    // Generation buildingVBA
-    glGenVertexArrays(1, &buildingVBA);
-    glBindVertexArray(buildingVBA);
-    // Generation buildingVBA
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glGenBuffers(1, &buildingVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, buildingVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBuilding), vertexBuilding, GL_STATIC_DRAW);
-    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)0);
-    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)(3*sizeof(float)));
-    //Generation buildingIBO
-    glGenBuffers(1, &buildingIBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buildingIBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(indiceBuilding), indiceBuilding, GL_STATIC_DRAW);
-    glBindVertexArray(0);
-
-    // Generation gardenVBA
-    glGenVertexArrays(1, &gardenVBA);
-    glBindVertexArray(gardenVBA);
-    // Generation gardenVBO
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glGenBuffers(1, &gardenVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, gardenVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexGarden), vertexGarden, GL_STATIC_DRAW);
-    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)0);
-    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 6*sizeof(float), (GLvoid*)(3*sizeof(float)));
-    //Generation gardenIBO
-    glGenBuffers(1, &gardenIBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gardenIBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(indiceGarden), indiceGarden, GL_STATIC_DRAW);
-    glBindVertexArray(0);
+    // Generation  des VBA
+    VBAgeneration(gardenVBA);
+    VBAgeneration(roofVBA);
+    VBAgeneration(buildingVBA);
+    //Generation  des VBO
+    VBOgeneration(gardenVBO, vertexGarden);
+    VBOgeneration(roofVBO, vertexRoof);
+    VBOgeneration(buildingVBO, vertexBuilding);
+    //Generation des IBO
+    IBOgeneration(gardenIBO, indiceGarden);
+    IBOgeneration(roofIBO, indiceRoof);
+    IBOgeneration(buildingIBO, indiceBuilding);
 }
 
 
