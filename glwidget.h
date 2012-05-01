@@ -1,11 +1,20 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
+#include <QtGui>
 #include <QGLWidget>
-#include "city.h"
 #include <QString>
 #include <QImage>
+#include <math.h>
+#define GLEW_STATIC
+#include "GL/glew.h"
 #include "glm.hpp"
+#include "city.h"
+#include "buffers.h"
+#include "shaders.h"
+#include "gtc/matrix_transform.hpp"
+#include "gtc/type_ptr.hpp"
+
 //#include "model.h"
 
 class GLWidget : public QGLWidget
@@ -18,7 +27,7 @@ public:
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
-    void setCity(City *city) {this->city = city;}
+    void setCity(City *city);
     void loadTexture (QString textureName);
 
 public slots:
@@ -46,6 +55,12 @@ private:
     void drawObject();
 
 private:
+
+    float yFOV;
+    City *city;
+    Buffers *buffers;
+    Shaders *shaders;
+    GLuint texture[4];
     int mXRotate;
     int mYRotate;
     int mZRotate;
@@ -54,10 +69,8 @@ private:
     float mXTranslate;
     float mYTranslate;
     float mZTranslate;
-    float mFov;
     float mFarRatio;
     float mNearRatio;
-    City *city;
     GLuint textureRoof;
     GLuint textureRoad;
     GLuint textureBuilding;
@@ -66,6 +79,7 @@ private:
 
     glm::mat4 projectionMatrix, viewMatrix;
     GLuint projectionMatrixUL, viewMatrixUL;
+
 
 };
 
