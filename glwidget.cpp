@@ -50,34 +50,40 @@ void GLWidget::initializeGL()
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
-    shaders->loadShader("fragment_basic.glsl", GL_FRAGMENT_SHADER);
-    shaders->loadShader("vertex_basic.glsl", GL_VERTEX_SHADER);
+    shaders->loadShader("data/fragment_basic.glsl", GL_FRAGMENT_SHADER);
+    shaders->loadShader("data/vertex_basic.glsl", GL_VERTEX_SHADER);
     shaders->compileShader();
 
     projectionMatrixUL = glGetUniformLocation(shaders->getShader(), "projectionMatrix");
     viewMatrixUL = glGetUniformLocation(shaders->getShader(), "viewMatrix");
     samplerUL = glGetUniformLocation(shaders->getShader(), "textureSampler");
+    viewMatrix = glm::translate(viewMatrix, glm::vec3(-10, -10, -10));
+    glUseProgram(shaders->getShader());
     glUniform1i(samplerUL, 0);
-    viewMatrix = glm::translate(viewMatrix, glm::vec3(-50, -50, -90));
-
-    loadTexture("road_texture.jpg");
+    glUseProgram(0);
+    loadTexture("data/road_texture.jpg", 0);
 
     setView();
 }
 
 void GLWidget::setCity(City *city)
 {
-    this->city = 0;
-    if(buffers !=0)
-        delete buffers;
-    buffers = new Buffers(city);
+    if(city != 0)
+    {
+        if(buffers !=0)
+            delete buffers;
+        buffers = new Buffers(city);
+    }
     this->city = city;
+    updateGL();
 }
 
 void GLWidget::setView()
 {
     projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),1.0f, 100.0f);
+    glUseProgram(shaders->getShader());
     glUniformMatrix4fv(projectionMatrixUL, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUseProgram(0);
 }
 
 void GLWidget::drawObject()
@@ -116,6 +122,7 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 {
     /*setFocus();
     lastPos = event->pos();*/
+    updateGL();
 }
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
