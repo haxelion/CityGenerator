@@ -99,8 +99,9 @@ void Buffers::makeRoofVBO(float *vertices, Element *building)
 
 void Buffers::generateRoadBuffer(List<Element*> *roadList)
 {
-    float *vertices = new float [5*4*roadList->getSize()];
-    int *indices = new int [6*roadList->getSize()];
+    roadNumber = roadList->getSize();
+    float *vertices = new float [20*roadNumber];
+    int *indices = new int [6*roadNumber];
     roadList->start();
     for(int i = 0;!roadList->isAtTheEnd();i++)
     {

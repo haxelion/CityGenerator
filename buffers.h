@@ -16,12 +16,18 @@ public:
     GLuint getRoofVBA() {return roofVBA;}
     GLuint getBuildingVBA() {return buildingVBA;}
     GLuint getGardenVBA() {return gardenVBA;}
+    GLuint getRoadTrianglesNumber(){return roadNumber*2;}
+    GLsizei getRoofTrianglesNumber(){return buildingNumber*2;}
+    GLsizei getBuildingTrianglesNumber(){return buildingNumber*8;}
+    GLsizei getGardenTrianglesNumber(){return gardenNumber*2;}
+
 
 private:
     GLuint roadVBO, roadVBA, roadIBO;
     GLuint roofVBO, roofVBA, roofIBO;
     GLuint buildingVBO, buildingVBA, buildingIBO;
     GLuint gardenVBO, gardenVBA, gardenIBO;
+    int roadNumber;
     int gardenNumber;
     int buildingNumber;
 

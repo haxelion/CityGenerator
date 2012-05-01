@@ -8,6 +8,7 @@ GLWidget::GLWidget(QWidget *parent)
     setFocus();
 
     shaders = new Shaders();
+    buffers = 0;
 
     yFOV = 1.04f;
     city = NULL;
@@ -43,12 +44,23 @@ void GLWidget::initializeGL()
     glClearColor(0.8f, 1.0f, 1.0f, 0.01f);
     // Augmentation de la qualité du calcul de perspective
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    // Choix du shader;
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
+
+    shaders->loadShader("fragment_basic.glsl", GL_FRAGMENT_SHADER);
+    shaders->loadShader("vertex_basic.glsl", GL_VERTEX_SHADER);
+    shaders->compileShader();
+
+    projectionMatrixUL = glGetUniformLocation(shaders->getShader(), "projectionMatrix");
+    viewMatrixUL = glGetUniformLocation(shaders->getShader(), "viewMatrix");
+    samplerUL = glGetUniformLocation(shaders->getShader(), "textureSampler");
+    glUniform1i(samplerUL, 0);
+    viewMatrix = glm::translate(viewMatrix, glm::vec3(-50, -50, -90));
+
+    loadTexture("road_texture.jpg");
 
     setView();
 }
@@ -56,7 +68,8 @@ void GLWidget::initializeGL()
 void GLWidget::setCity(City *city)
 {
     this->city = 0;
-    delete buffers;
+    if(buffers !=0)
+        delete buffers;
     buffers = new Buffers(city);
     this->city = city;
 }
@@ -64,11 +77,22 @@ void GLWidget::setCity(City *city)
 void GLWidget::setView()
 {
     projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),1.0f, 100.0f);
+    glUniformMatrix4fv(projectionMatrixUL, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 }
 
 void GLWidget::drawObject()
 {
+    glUseProgram(shaders->getShader());
+    glUniformMatrix4fv(viewMatrixUL, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
+    //Draw roads
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
+    glBindVertexArray(buffers->getRoadVBA());
+    glDrawElements(GL_TRIANGLES, buffers->getRoadTrianglesNumber(), GL_UNSIGNED_INT, (GLvoid*)0);
+    glBindVertexArray(0);
+
+    glUseProgram(0);
 }
 void GLWidget::paintGL()
 {
@@ -185,7 +209,7 @@ void GLWidget::setZRotation(int angle)
     }*/
 }
 
-void GLWidget::loadTexture(QString textureName, int place)
+void GLWidget::loadTexture(const char *textureName, int place)
 {
 
     if(place>=TEXTURE_NUMBER)
@@ -199,6 +223,8 @@ void GLWidget::loadTexture(QString textureName, int place)
     glGenTextures( 1, &textures[place] );
     glBindTexture( GL_TEXTURE_2D, textures[place] );
     glTexImage2D( GL_TEXTURE_2D, 0, 3, textureImage.width(), textureImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureImage.bits() );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 }

@@ -30,7 +30,7 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
     void setCity(City *city);
-    void loadTexture(QString textureName, int place);
+    void loadTexture(const char *textureName, int place);
 
 public slots:
     void setXRotation(int angle);
@@ -60,7 +60,7 @@ private:
     GLuint textures[TEXTURE_NUMBER];
 
     glm::mat4 projectionMatrix, viewMatrix;
-    GLuint projectionMatrixUL, viewMatrixUL;
+    GLuint projectionMatrixUL, viewMatrixUL, samplerUL;
 
 
 };
