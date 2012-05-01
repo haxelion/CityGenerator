@@ -13,6 +13,12 @@ public:
     ~Buffers();
     void generateRoadBuffer();
     void generateElementBuffer();
+    void makeVertex(float *vertex, float x, float y, float z, float u, float v);
+    void makeQuadIndices(int *indices, int i);
+    void makeTriangleIndices(int *indices, int i, int j, int k);
+    void VBAgeneration (GLuint VBA);
+    void VBOgeneration (GLuint VBO, float* vertices);
+    void IBOgeneration (GLuint IBO, float* indices);
     GLuint getRoadVBA() {return roadVBA;}
     GLuint getRoofVBA() {return roofVBA;}
     GLuint getBuildingVBA() {return buildingVBA;}
@@ -24,23 +30,5 @@ private:
     GLuint buildingVBO, buildingVBA, buildingIBO;
     GLuint gardenVBO, gardenVBA, gardenIBO;
 
-    void makeVertex(float *vertex, float x, float y, float z, float u, float v)
-    {
-        vertex[0] = x;
-        vertex[1] = y;
-        vertex[2] = z;
-        vertex[3] = u;
-        vertex[4] = v;
-    }
-
-    void makeQuadIndices(int *indices, int i)
-    {
-        indices[0]= i;
-        indices[1]= i+1;
-        indices[2]= i+2;
-        indices[3]= i;
-        indices[4]= i+2;
-        indices[5]= i+3;
-    }
 };
 #endif // BUFFERS_H

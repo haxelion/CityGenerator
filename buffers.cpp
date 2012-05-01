@@ -87,23 +87,9 @@ void Buffers::generateRoadBuffer(List<Element*> *roadList)
         makeQuadIndices(indice+i*6);
         roadList->next();
     }
-
-    // Création VBA
-    glGenVertexArrays(1, &roadVBA);
-    glBindVertexArray(roadVBA);
-    //Generation VBO.
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glGenBuffers(1, &roadVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, roadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
-    glVertexAttribPointer(0,4,GL_FLOAT, GL_FALSE, 5*sizeof(float), (GLvoid*)0);
-    glVertexAttribPointer(1,4,GL_FLOAT, GL_FALSE, 5*sizeof(float), (GLvoid*)(3*sizeof(float)));
-    //Generation IBO.
-    glGenBuffers(1, &roadIBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, roadIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indice), indice, GL_STATIC_DRAW);
-    glBindVertexArray(0);
+    VBAgeneration(roadVBA);
+    VBOgeneration(roadVBO, vertex);
+    IBOgeneration(roadIBO, indice);
 }
 
 void Buffers::generateElementBuffer(List<Block*> *BlockList)
@@ -167,7 +153,7 @@ void Buffers::generateElementBuffer(List<Block*> *BlockList)
                 makeVertex(vertexBuilding+(j*4+14)*5, l->getCurrentElement()->getX1(), l->getCurrentElement()->getY1(), h, 1, 1);
                 makeVertex(vertexBuilding+(j*4+15)*5, l->getCurrentElement()->getX2(), l->getCurrentElement()->getY1(), h, 1, 0);
                 //Pour l'IBO des buildings.
-                makeTriangleIndices(indiceBuilding+(j**8*3,j,j+5,j+4);
+                makeTriangleIndices(indiceBuilding+(j*8*3,j,j+5,j+4);
                 makeTriangleIndices(indiceBuilding+((j*8)+1)*3,j,j+1,j+5);
                 makeTriangleIndices(indiceBuilding+((j*8)+2)*3,j+1,j+6,j+5);
                 makeTriangleIndices(indiceBuilding+((j*8)+3)*3,j+1,j+2,j+6);

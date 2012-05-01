@@ -28,10 +28,7 @@ GLWidget::GLWidget(QWidget *parent)
 }
 GLWidget::~GLWidget()
 {
-    for (int i = 0; i < 4; i++)
-    {
-        glDeleteTextures(1, texture[i]);;
-    }
+   glDeleteTextures(4, texture);;
 }
 
 QSize GLWidget::minimumSizeHint() const
@@ -251,17 +248,17 @@ void GLWidget::setZRotation(int angle)
     }
 }
 
-void GLWidget::loadTexture(QString textureName, int place)
+void GLWidget::loadTexture(QString textureName, )
 {
 
-    if (texture[place]==0)
-        glDeleteTextures(1, texture[place]);
+    if ()
+        glDeleteTextures(1, );
     QImage Texture;
     QImage TempTexture;
     TempTexture.load(textureName);
     Texture = GLWidget.convertToGLFormat(TempTexture);
-    glGenTextures( 1, GLWidget.texture[place] );
-    glBindTexture( GL_TEXTURE_2D, texture[place] );
+    glGenTextures( 1,  );
+    glBindTexture( GL_TEXTURE_2D, );
     glTexImage2D( GL_TEXTURE_2D, 0, 3, Texture.width(), Texture.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, Texture.bits() );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
