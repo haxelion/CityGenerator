@@ -41,7 +41,7 @@ void GLWidget::initializeGL()
     makeCurrent();
     glewInit();
     //Definition de la couleur du fond
-    glClearColor(0.8f, 1.0f, 1.0f, 0.01f);
+    glClearColor(0.8f, 1.0f, 1.0f, 1.0f);
     // Augmentation de la qualité du calcul de perspective
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glEnable(GL_DEPTH_TEST);
@@ -57,7 +57,7 @@ void GLWidget::initializeGL()
     projectionMatrixUL = glGetUniformLocation(shaders->getShader(), "projectionMatrix");
     viewMatrixUL = glGetUniformLocation(shaders->getShader(), "viewMatrix");
     samplerUL = glGetUniformLocation(shaders->getShader(), "textureSampler");
-    viewMatrix = glm::translate(viewMatrix, glm::vec3(-10, -10, -10));
+    //viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -10));
     glUseProgram(shaders->getShader());
     glUniform1i(samplerUL, 0);
     glUseProgram(0);
@@ -94,10 +94,10 @@ void GLWidget::drawObject()
     //Draw roads
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textures[0]);
-    glBindVertexArray(buffers->getRoadVBA());
+    buffers->bindRoad();
     glDrawElements(GL_TRIANGLES, buffers->getRoadTrianglesNumber(), GL_UNSIGNED_INT, (GLvoid*)0);
     glBindVertexArray(0);
-
+    glBindTexture(GL_TEXTURE_2D, 0);
     glUseProgram(0);
 }
 void GLWidget::paintGL()

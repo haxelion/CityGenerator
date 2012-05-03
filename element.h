@@ -2,6 +2,7 @@
 #define ELEMENT_H
 
 #include "zone.h"
+#include "stdio.h"
 
 enum ElementType {ROAD, BUILDING, GARDEN};
 

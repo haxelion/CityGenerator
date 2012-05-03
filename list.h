@@ -174,7 +174,7 @@ public:
 
     bool isAtTheEnd() const
     {
-        return position == size;
+        return position >= size;
     }
 
 };
