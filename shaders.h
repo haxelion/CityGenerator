@@ -2,13 +2,14 @@
 #define SHADERS_H
 #define GLEW_STATIC
 #include <GL/glew.h>
+#include <QFile>
 
 
 class Shaders
 {
 public:
     Shaders();
-    ~Sharders();
+    ~Shaders();
     void loadShader(const char *path, GLenum shaderType);
     void compileShader();
     GLuint getShader() {return shader;}

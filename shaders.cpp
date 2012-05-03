@@ -1,7 +1,6 @@
 #include "shaders.h"
-#include <QFile>
 
-Shaders::~Shaders()
+Shaders::Shaders()
 {
     vertexShader = 0;
     fragmentShader = 0;
@@ -24,7 +23,7 @@ void Shaders::loadShader(const char *path, GLenum shaderType)
     file.open(QIODevice::ReadOnly);
     long fileSize = file.size();
     char *code = new char[fileSize+1];
-    file.readData(code,fileSize);
+    file.read(code,fileSize);
     code[fileSize] = '\0';
     shaderID = glCreateShader(shaderType);
     glShaderSource(shaderID, 1, (const GLchar**)&code, NULL);
@@ -46,7 +45,7 @@ void Shaders::loadShader(const char *path, GLenum shaderType)
     }
 }
 
-void shaders::compileShader()
+void Shaders::compileShader()
 {
     shader = glCreateProgram();
     glAttachShader(shader, fragmentShader);

@@ -1,13 +1,13 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
+#define GLEW_STATIC
+#include "GL/glew.h"
 #include <QtGui>
 #include <QGLWidget>
 #include <QString>
 #include <QImage>
 #include <math.h>
-#define GLEW_STATIC
-#include "GL/glew.h"
 #include "glm.hpp"
 #include "city.h"
 #include "buffers.h"
@@ -16,6 +16,8 @@
 #include "gtc/type_ptr.hpp"
 
 //#include "model.h"
+
+const int TEXTURE_NUMBER = 4;
 
 class GLWidget : public QGLWidget
 {
@@ -28,17 +30,12 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
     void setCity(City *city);
-    void loadTexture (QString textureName);
+    void loadTexture(const char *textureName, int place);
 
 public slots:
     void setXRotation(int angle);
     void setYRotation(int angle);
     void setZRotation(int angle);
-
-signals:
-    void xRotationChanged(int angle);
-    void yRotationChanged(int angle);
-    void zRotationChanged(int angle);
 
 protected:
     void initializeGL();
@@ -60,25 +57,10 @@ private:
     City *city;
     Buffers *buffers;
     Shaders *shaders;
-    GLuint texture[4];
-    int mXRotate;
-    int mYRotate;
-    int mZRotate;
-    float mScale;
-    int place;
-    float mXTranslate;
-    float mYTranslate;
-    float mZTranslate;
-    float mFarRatio;
-    float mNearRatio;
-    GLuint textureRoof;
-    GLuint textureRoad;
-    GLuint textureBuilding;
-    GLuint textureGarden;
-    QPoint lastPos;
+    GLuint textures[TEXTURE_NUMBER];
 
     glm::mat4 projectionMatrix, viewMatrix;
-    GLuint projectionMatrixUL, viewMatrixUL;
+    GLuint projectionMatrixUL, viewMatrixUL, samplerUL;
 
 
 };

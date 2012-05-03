@@ -7,19 +7,23 @@ GLWidget::GLWidget(QWidget *parent)
     this->format().setAlpha(true);
     setFocus();
 
-    buffers = new Buffers();
     shaders = new Shaders();
+    buffers = 0;
 
-    yFOV = 1.04;
+    yFOV = 1.04f;
     city = NULL;
     for (int i = 0; i < 4; i++)
-    {
-        texture[i]=0;
-    }
+        textures[i]=0;
 }
 GLWidget::~GLWidget()
 {
-   glDeleteTextures(4, texture);;
+    for (int i = 0; i < TEXTURE_NUMBER; i++)
+    {
+        if(textures[i] !=0)
+            glDeleteTextures(1, &textures[i]);;
+    }
+    delete buffers;
+    delete shaders;
 }
 
 QSize GLWidget::minimumSizeHint() const
@@ -40,32 +44,61 @@ void GLWidget::initializeGL()
     glClearColor(0.8f, 1.0f, 1.0f, 0.01f);
     // Augmentation de la qualité du calcul de perspective
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    // Choix du shader;
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
+    shaders->loadShader("data/fragment_basic.glsl", GL_FRAGMENT_SHADER);
+    shaders->loadShader("data/vertex_basic.glsl", GL_VERTEX_SHADER);
+    shaders->compileShader();
+
+    projectionMatrixUL = glGetUniformLocation(shaders->getShader(), "projectionMatrix");
+    viewMatrixUL = glGetUniformLocation(shaders->getShader(), "viewMatrix");
+    samplerUL = glGetUniformLocation(shaders->getShader(), "textureSampler");
+    viewMatrix = glm::translate(viewMatrix, glm::vec3(-10, -10, -10));
+    glUseProgram(shaders->getShader());
+    glUniform1i(samplerUL, 0);
+    glUseProgram(0);
+    loadTexture("data/road_texture.jpg", 0);
+
     setView();
 }
 
 void GLWidget::setCity(City *city)
 {
-    this->city = 0;
-    delete buffers;
-    buffers = new Buffers(city);
+    if(city != 0)
+    {
+        if(buffers !=0)
+            delete buffers;
+        buffers = new Buffers(city);
+    }
     this->city = city;
+    updateGL();
 }
 
 void GLWidget::setView()
 {
-    projectionMatrix = glm::perspective(mFov, this->width()/(float)this->height(),1, 100);
+    projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),1.0f, 100.0f);
+    glUseProgram(shaders->getShader());
+    glUniformMatrix4fv(projectionMatrixUL, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUseProgram(0);
 }
 
 void GLWidget::drawObject()
 {
+    glUseProgram(shaders->getShader());
+    glUniformMatrix4fv(viewMatrixUL, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
+    //Draw roads
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
+    glBindVertexArray(buffers->getRoadVBA());
+    glDrawElements(GL_TRIANGLES, buffers->getRoadTrianglesNumber(), GL_UNSIGNED_INT, (GLvoid*)0);
+    glBindVertexArray(0);
+
+    glUseProgram(0);
 }
 void GLWidget::paintGL()
 {
@@ -74,25 +107,10 @@ void GLWidget::paintGL()
     //Vide les differents buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    //Sauvegarde la matrice ModelView initiale, avant de la modifier
-    glPushMatrix();
-
-    //Applique la transformation
-    glLoadIdentity();
-    glTranslatef(mXTranslate, mYTranslate, mZTranslate+5.0);
-    glRotatef(mXRotate / 16.0, 1.0, 0.0, 0.0);
-    glRotatef(mYRotate / 16.0, 0.0, 1.0, 0.0);
-    glRotatef(mZRotate / 16.0, 0.0, 0.0, 1.0);
-    glScalef(mScale, mScale, mScale);
-
-    GLfloat lightPos[4] = {20.0f, -10.0f, 50.f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
     //Dessine les objects dans la scene
     if(city!=NULL)
         drawObject();
 
-    glPopMatrix();
 }
 void GLWidget::resizeGL(int, int)
 {
@@ -102,12 +120,13 @@ void GLWidget::resizeGL(int, int)
 //Gestion de la souris
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-    setFocus();
-    lastPos = event->pos();
+    /*setFocus();
+    lastPos = event->pos();*/
+    updateGL();
 }
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    int dx = event->x() - lastPos.x();
+    /*int dx = event->x() - lastPos.x();
     int dy = event->y() - lastPos.y();
 
     if (event->buttons() & Qt::LeftButton)
@@ -120,11 +139,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         setXRotation(mXRotate + 8 * dy);
         setZRotation(mZRotate + 8 * dx);
     }
-    lastPos = event->pos();
+    lastPos = event->pos();*/
 }
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
-    float notch = event->delta()/ 120.0f;
+    /*float notch = event->delta()/ 120.0f;
 
     switch(event->modifiers())
     {
@@ -137,13 +156,13 @@ void GLWidget::wheelEvent(QWheelEvent *event)
         mScale *= pow(1.2f, -notch);
         break;
     }
-    update();
+    update();*/
 }
 
 //Gestion du clavier
 void GLWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch(event->key())
+    /*switch(event->key())
     {
     case Qt::Key_Down:
         mYTranslate -= 0.5;
@@ -166,56 +185,53 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
-    update();
+    update();*/
 }
 
-static void qNormalizeAngle(int &angle)
-{
-    while (angle < 0)
-        angle += 360 * 16;
-    while (angle > 360 * 16)
-        angle -= 360 * 16;
-}
 void GLWidget::setXRotation(int angle)
 {
-    qNormalizeAngle(angle);
+    /*qNormalizeAngle(angle);
     if (angle != mXRotate) {
         mXRotate = angle;
         emit xRotationChanged(angle);
         updateGL();
-    }
+    }*/
 }
 void GLWidget::setYRotation(int angle)
 {
-    qNormalizeAngle(angle);
+    /*qNormalizeAngle(angle);
     if (angle != mYRotate) {
         mYRotate = angle;
         emit yRotationChanged(angle);
         updateGL();
-    }
+    }*/
 }
 void GLWidget::setZRotation(int angle)
 {
-    qNormalizeAngle(angle);
+    /*qNormalizeAngle(angle);
     if (angle != mZRotate) {
         mZRotate = angle;
         emit zRotationChanged(angle);
         updateGL();
-    }
+    }*/
 }
 
-void GLWidget::loadTexture(QString textureName, )
+void GLWidget::loadTexture(const char *textureName, int place)
 {
 
-    if ()
-        glDeleteTextures(1, );
-    QImage Texture;
-    QImage TempTexture;
-    TempTexture.load(textureName);
-    Texture = GLWidget.convertToGLFormat(TempTexture);
-    glGenTextures( 1,  );
-    glBindTexture( GL_TEXTURE_2D, );
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, Texture.width(), Texture.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, Texture.bits() );
+    if(place>=TEXTURE_NUMBER)
+        return;
+    if (textures[place]==0)
+        glDeleteTextures(1, &textures[place]);
+    QImage textureImage;
+    QImage tempTextureImage;
+    tempTextureImage.load(textureName);
+    textureImage = QGLWidget::convertToGLFormat(tempTextureImage);
+    glGenTextures( 1, &textures[place] );
+    glBindTexture( GL_TEXTURE_2D, textures[place] );
+    glTexImage2D( GL_TEXTURE_2D, 0, 3, textureImage.width(), textureImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureImage.bits() );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 }
