@@ -10,6 +10,7 @@ Block::Block(Zone zone, float minBuildingHeight, float maxBuildingHeight, float 
     this->heightVariance = heightVariance;
     this->garden = garden;
     elementList = new List<Element*>();
+    divideInElements(*(Zone*)this);
 }
 
 void Block::divideInElements(Zone zone)

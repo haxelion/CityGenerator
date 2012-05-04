@@ -21,6 +21,8 @@ inline float maxf(float a, float b);
 // Renvoie un nombre aléatoire entier entre min compris et max non compris selon une distribution uniforme.
 inline int rand(int min, int max)
 {
+    if(min == max)
+        return min;
     return rand()%(max-min)+min;
 }
 
