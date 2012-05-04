@@ -14,6 +14,7 @@
 #include "shaders.h"
 #include "gtc/matrix_transform.hpp"
 #include "gtc/type_ptr.hpp"
+#include "QPoint"
 
 //#include "model.h"
 
@@ -58,6 +59,9 @@ private:
     Buffers *buffers;
     Shaders *shaders;
     GLuint textures[TEXTURE_NUMBER];
+    QPoint lastPos;
+    float angleX,angleY,positionX,positionY,positionZ;
+
 
     glm::mat4 projectionMatrix, viewMatrix;
     GLuint projectionMatrixUL, viewMatrixUL, samplerUL;

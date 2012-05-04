@@ -89,6 +89,10 @@ void GLWidget::setView()
 void GLWidget::drawObject()
 {
     glUseProgram(shaders->getShader());
+    viewMatrix = glm::translate(glm::mat4(),glm::vec3(positionX,positionY,positionZ));
+    viewMatrix = glm::rotate(viewMatrix,angleX,glm::vec3(1.0,0,0));
+    viewMatrix = glm::rotate(viewMatrix,angleY,glm::vec3(0,1.0,0));
+
     glUniformMatrix4fv(viewMatrixUL, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
     //Draw roads
@@ -117,30 +121,66 @@ void GLWidget::resizeGL(int, int)
     setView();
 }
 
+
 //Gestion de la souris
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-    /*setFocus();
-    lastPos = event->pos();*/
+    setFocus();
+    lastPos = event->pos();
     updateGL();
 }
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    /*int dx = event->x() - lastPos.x();
+    int dx = event->x() - lastPos.x();
     int dy = event->y() - lastPos.y();
-
-    if (event->buttons() & Qt::LeftButton)
-    {
-        setXRotation(mXRotate + 8 * dy);
-        setYRotation(mYRotate + 8 * dx);
-    }
-    else if (event->buttons() & Qt::RightButton)
-    {
-        setXRotation(mXRotate + 8 * dy);
-        setZRotation(mZRotate + 8 * dx);
-    }
-    lastPos = event->pos();*/
+    int constant = 8;
+    angleY += constant*dx;
+    angleX += constant*dy;
+    lastPos = event->pos();
 }
+
+void GLWidget::keyPressEvent(QKeyEvent *event)
+{
+    float constant = 1;
+    float rayon = sqrt(positionX*positionX+positionY*positionY+positionZ*positionZ);
+    switch(event->key())
+    {
+    case Qt::Key_Down:
+         rayon-=constant;
+         positionX= rayon*cos(angleX)*cos(angleY);
+         positionY= rayon*sin(angleX);
+         positionZ= rayon*cos(angleX)*sin(angleY);
+        break;
+    case Qt::Key_Up :
+         rayon+=constant;
+         positionX= rayon*cos(angleX)*cos(angleY);
+         positionY= rayon*sin(angleX);
+         positionZ= rayon*cos(angleX)*sin(angleY);
+        break;
+    case Qt::Key_Left:
+        positionZ += constant*sin(angleY);
+        positionX += constant*cos(angleY);
+        break;
+    case Qt::Key_Right :
+        positionZ -= constant*sin(angleY);
+        positionX -= constant*cos(angleY);
+        break;
+
+    case Qt::Key_PageDown :
+         positionY-= constant;
+        break;
+
+    case Qt::Key_PageUp:
+         positionY+= constant;
+        break;
+
+    default:
+        break;
+    }
+    update();
+}
+
+
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
     /*float notch = event->delta()/ 120.0f;
@@ -160,8 +200,8 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 }
 
 //Gestion du clavier
-void GLWidget::keyPressEvent(QKeyEvent *event)
-{
+//void GLWidget::keyPressEvent(QKeyEvent *event)
+//{
     /*switch(event->key())
     {
     case Qt::Key_Down:
@@ -186,7 +226,7 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
         break;
     }
     update();*/
-}
+//}
 
 void GLWidget::setXRotation(int angle)
 {
