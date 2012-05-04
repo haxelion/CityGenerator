@@ -10,7 +10,7 @@ GLWidget::GLWidget(QWidget *parent)
     shaders = new Shaders();
     buffers = 0;
 
-    yFOV = 1.04f;
+    yFOV = 60.0f;
     city = NULL;
     for (int i = 0; i < 4; i++)
         textures[i]=0;
@@ -41,7 +41,7 @@ void GLWidget::initializeGL()
     makeCurrent();
     glewInit();
     //Definition de la couleur du fond
-    glClearColor(0.8f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     // Augmentation de la qualité du calcul de perspective
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glEnable(GL_DEPTH_TEST);
@@ -57,7 +57,7 @@ void GLWidget::initializeGL()
     projectionMatrixUL = glGetUniformLocation(shaders->getShader(), "projectionMatrix");
     viewMatrixUL = glGetUniformLocation(shaders->getShader(), "viewMatrix");
     samplerUL = glGetUniformLocation(shaders->getShader(), "textureSampler");
-    //viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -10));
+    viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, 2));
     glUseProgram(shaders->getShader());
     glUniform1i(samplerUL, 0);
     glUseProgram(0);
@@ -80,7 +80,7 @@ void GLWidget::setCity(City *city)
 
 void GLWidget::setView()
 {
-    projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),1.0f, 100.0f);
+    projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),0.1f, 100.0f);
     glUseProgram(shaders->getShader());
     glUniformMatrix4fv(projectionMatrixUL, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
     glUseProgram(0);
@@ -95,7 +95,7 @@ void GLWidget::drawObject()
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textures[0]);
     buffers->bindRoad();
-    glDrawElements(GL_TRIANGLES, buffers->getRoadTrianglesNumber(), GL_UNSIGNED_INT, (GLvoid*)0);
+    glDrawElements(GL_TRIANGLES, buffers->getRoadTrianglesNumber()*3, GL_UNSIGNED_INT, (GLvoid*)0);
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
     glUseProgram(0);
