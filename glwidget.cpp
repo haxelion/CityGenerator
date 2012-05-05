@@ -49,6 +49,7 @@ void GLWidget::initializeGL()
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     // Augmentation de la qualité du calcul de perspective
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
@@ -275,11 +276,14 @@ void GLWidget::loadTexture(const char *textureName, int place)
     textureImage = QGLWidget::convertToGLFormat(tempTextureImage);
     glGenTextures( 1, &textures[place] );
     glBindTexture( GL_TEXTURE_2D, textures[place] );
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, textureImage.width(), textureImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureImage.bits() );
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, textureImage.width(), textureImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, textureImage.bits() );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 1000);
+    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 
