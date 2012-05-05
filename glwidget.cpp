@@ -69,6 +69,7 @@ void GLWidget::initializeGL()
     loadTexture("data/road_texture.png", ROAD_BUFFER);
     loadTexture("data/building_texture.png", BUILDING_BUFFER);
     loadTexture("data/roof_texture.png", ROOF_BUFFER);
+    loadTexture("data/intersection_texture.png", INTERSECTION_BUFFER);
 
     setView();
 }
@@ -108,7 +109,7 @@ void GLWidget::drawObject()
     buffers->bindBuffer(ROAD_BUFFER);
     glDrawElements(GL_TRIANGLES, buffers->getBufferIndicesNumber(ROAD_BUFFER), GL_UNSIGNED_INT, (GLvoid*)0);
     //Draw intersections
-    glBindTexture(GL_TEXTURE_2D, textures[ROAD_BUFFER]);//utilise cette texture en attendant
+    glBindTexture(GL_TEXTURE_2D, textures[INTERSECTION_BUFFER]);
     buffers->bindBuffer(INTERSECTION_BUFFER);
     glDrawElements(GL_TRIANGLES, buffers->getBufferIndicesNumber(INTERSECTION_BUFFER), GL_UNSIGNED_INT, (GLvoid*)0);
     //Draw building
