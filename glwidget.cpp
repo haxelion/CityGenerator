@@ -46,7 +46,7 @@ void GLWidget::initializeGL()
     makeCurrent();
     glewInit();
     //Definition de la couleur du fond
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     // Augmentation de la qualité du calcul de perspective
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
@@ -63,11 +63,12 @@ void GLWidget::initializeGL()
     projectionMatrixUL = glGetUniformLocation(shaders->getShader(), "projectionMatrix");
     viewMatrixUL = glGetUniformLocation(shaders->getShader(), "viewMatrix");
     samplerUL = glGetUniformLocation(shaders->getShader(), "textureSampler");
-    viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, 2));
     glUseProgram(shaders->getShader());
     glUniform1i(samplerUL, 0);
     glUseProgram(0);
-    loadTexture("data/road_texture.jpg", 0);
+    loadTexture("data/road_texture.png", 0);
+    loadTexture("data/building_texture.png", 1);
+    loadTexture("data/roof_texture.png", 2);
 
     setView();
 }
@@ -87,7 +88,7 @@ void GLWidget::setCity(City *city)
 void GLWidget::setView()
 {
     glViewport(0,0,this->width(), this->height());
-    projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),0.1f, 100.0f);
+    projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),1.0f, 1000.0f);
     glUseProgram(shaders->getShader());
     glUniformMatrix4fv(projectionMatrixUL, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
     glUseProgram(0);
@@ -101,12 +102,20 @@ void GLWidget::drawObject()
     viewMatrix = glm::rotate(viewMatrix,angleY,glm::vec3(0,1.0,0));
 
     glUniformMatrix4fv(viewMatrixUL, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-
-    //Draw roads
     glActiveTexture(GL_TEXTURE0);
+    //Draw roads
     glBindTexture(GL_TEXTURE_2D, textures[0]);
     buffers->bindRoad();
     glDrawElements(GL_TRIANGLES, buffers->getRoadTrianglesNumber()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+    //Draw Building
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
+    buffers->bindBuilding();
+    glDrawElements(GL_TRIANGLES, buffers->getBuildingTrianglesNumber()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+    //Draw roof
+    glBindTexture(GL_TEXTURE_2D, textures[2]);
+    buffers->bindRoof();
+    glDrawElements(GL_TRIANGLES, buffers->getRoofTrianglesNumber()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
     glUseProgram(0);

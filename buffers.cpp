@@ -82,24 +82,24 @@ void Buffers::makeBuildingVBO(float *vertices, Element *building)
     // Face 1.
     float h = building->getHeight();
     makeVertex(vertices, building->getX1(), building->getY1(), 0, 0, 0);
-    makeVertex(vertices+5, building->getX1(), building->getY1(), h, 1, 0);
-    makeVertex(vertices+10, building->getX1(), building->getY2(), h, 1, 1);
-    makeVertex(vertices+15, building->getX1(), building->getY2(), 0, 0, 1);
+    makeVertex(vertices+5, building->getX1(), building->getY1(), h, h, 0);
+    makeVertex(vertices+10, building->getX1(), building->getY2(), h, h, building->getYWidth());
+    makeVertex(vertices+15, building->getX1(), building->getY2(), 0, 0, building->getYWidth());
     // Face 2.
     makeVertex(vertices+20, building->getX1(), building->getY2(), 0, 0, 0);
-    makeVertex(vertices+25, building->getX1(), building->getY2(), h, 1, 0);
-    makeVertex(vertices+30, building->getX2(), building->getY2(), h, 1, 1);
-    makeVertex(vertices+35, building->getX2(), building->getY2(), 0, 0, 1);
+    makeVertex(vertices+25, building->getX1(), building->getY2(), h, h, 0);
+    makeVertex(vertices+30, building->getX2(), building->getY2(), h, h, building->getXWidth());
+    makeVertex(vertices+35, building->getX2(), building->getY2(), 0, 0, building->getXWidth());
     // Face 3.
     makeVertex(vertices+40, building->getX2(), building->getY2(), 0, 0, 0);
-    makeVertex(vertices+45, building->getX2(), building->getY2(), h, 1, 0);
-    makeVertex(vertices+50, building->getX2(), building->getY1(), h, 1, 1);
-    makeVertex(vertices+55, building->getX2(), building->getY1(), 0, 0, 1);
+    makeVertex(vertices+45, building->getX2(), building->getY2(), h, h, 0);
+    makeVertex(vertices+50, building->getX2(), building->getY1(), h, h, building->getYWidth());
+    makeVertex(vertices+55, building->getX2(), building->getY1(), 0, 0, building->getYWidth());
     //Face 4
     makeVertex(vertices+60, building->getX2(), building->getY1(), 0, 0, 0);
-    makeVertex(vertices+65, building->getX2(), building->getY1(), h, 1, 0);
-    makeVertex(vertices+70, building->getX1(), building->getY1(), h, 1, 1);
-    makeVertex(vertices+75, building->getX1(), building->getY1(), 0, 0, 1);
+    makeVertex(vertices+65, building->getX2(), building->getY1(), h, h, 0);
+    makeVertex(vertices+70, building->getX1(), building->getY1(), h, h, building->getXWidth());
+    makeVertex(vertices+75, building->getX1(), building->getY1(), 0, 0, building->getXWidth());
 }
 
 void Buffers::makeGardenVBO(float *vertices, Element *garden)
@@ -113,18 +113,18 @@ void Buffers::makeGardenVBO(float *vertices, Element *garden)
 void Buffers::makeRoadVBO(float *vertices, Element *road)
 {
     makeVertex(vertices, road->getX1(), road->getY1(), 0, 0, 0);
-    makeVertex(vertices+5, road->getX2(), road->getY1(), 0, 1, 0);
-    makeVertex(vertices+10, road->getX2(), road->getY2(), 0, 1, 1);
-    makeVertex(vertices+15, road->getX1(), road->getY2(), 0, 0, 1);
+    makeVertex(vertices+5, road->getX2(), road->getY1(), 0, road->getXWidth(), 0);
+    makeVertex(vertices+10, road->getX2(), road->getY2(), 0, road->getXWidth(), road->getYWidth());
+    makeVertex(vertices+15, road->getX1(), road->getY2(), 0, 0, road->getYWidth());
 }
 
 void Buffers::makeRoofVBO(float *vertices, Element *building)
 {
     float h = building->getHeight();
     makeVertex(vertices, building->getX1(), building->getY1(), h, 0, 0);
-    makeVertex(vertices+5, building->getX2(), building->getY1(), h, 1, 0);
-    makeVertex(vertices+10, building->getX2(), building->getY2(), h, 1, 1);
-    makeVertex(vertices+15, building->getX1(), building->getY2(), h, 0, 1);
+    makeVertex(vertices+5, building->getX2(), building->getY1(), h, building->getXWidth(), 0);
+    makeVertex(vertices+10, building->getX2(), building->getY2(), h, building->getXWidth(), building->getYWidth());
+    makeVertex(vertices+15, building->getX1(), building->getY2(), h, 0, building->getYWidth());
 }
 
 void Buffers::generateRoadBuffer(List<Element*> *roadList)

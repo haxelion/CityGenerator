@@ -4,7 +4,7 @@
 #include "zone.h"
 #include "stdio.h"
 
-enum ElementType {ROAD, BUILDING, GARDEN};
+enum ElementType {VERTICAL_ROAD, HORIZONTAL_ROAD, INTERSECTION, BUILDING, GARDEN};
 
 class Element : public Zone
 {
