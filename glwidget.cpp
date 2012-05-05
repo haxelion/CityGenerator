@@ -11,6 +11,11 @@ GLWidget::GLWidget(QWidget *parent)
     buffers = 0;
 
     yFOV = 60.0f;
+    angleX = 0;
+    angleY = 0;
+    positionX = 0;
+    positionY = 0;
+    positionZ = -2;
     city = NULL;
     for (int i = 0; i < 4; i++)
         textures[i]=0;
@@ -80,6 +85,7 @@ void GLWidget::setCity(City *city)
 
 void GLWidget::setView()
 {
+    glViewport(0,0,this->width(), this->height());
     projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),0.1f, 100.0f);
     glUseProgram(shaders->getShader());
     glUniformMatrix4fv(projectionMatrixUL, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
