@@ -18,8 +18,6 @@
 
 //#include "model.h"
 
-const int TEXTURE_NUMBER = 4;
-
 class GLWidget : public QGLWidget
 {
     Q_OBJECT
@@ -58,7 +56,7 @@ private:
     City *city;
     Buffers *buffers;
     Shaders *shaders;
-    GLuint textures[TEXTURE_NUMBER];
+    GLuint textures[NUMBER_OF_BUFFER];
     QPoint lastPos;
     float angleX,angleY,positionX,positionY,positionZ;
 

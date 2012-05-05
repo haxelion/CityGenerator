@@ -43,11 +43,11 @@ void City::divideInBlocks(Zone zone)
 
     if(xDivide && yDivide)
     {
-        roadList->addElement(new Element(Zone(xRoad,zone.getY1(),xRoad+1, yRoad), 0, ROAD));
-        roadList->addElement(new Element(Zone(xRoad,yRoad,xRoad+1, yRoad+1), 0, ROAD));
-        roadList->addElement(new Element(Zone(xRoad,yRoad+1,xRoad+1, zone.getY2()), 0, ROAD));
-        roadList->addElement(new Element(Zone(zone.getX1(),yRoad,xRoad, yRoad+1), 0, ROAD));
-        roadList->addElement(new Element(Zone(xRoad+1,yRoad,zone.getX2(), yRoad+1), 0, ROAD));
+        roadList->addElement(new Element(Zone(xRoad,zone.getY1(),xRoad+1, yRoad), 0, X_ROAD));
+        roadList->addElement(new Element(Zone(xRoad,yRoad,xRoad+1, yRoad+1), 0, INTERSECTION));
+        roadList->addElement(new Element(Zone(xRoad,yRoad+1,xRoad+1, zone.getY2()), 0, X_ROAD));
+        roadList->addElement(new Element(Zone(zone.getX1(),yRoad,xRoad, yRoad+1), 0, Y_ROAD));
+        roadList->addElement(new Element(Zone(xRoad+1,yRoad,zone.getX2(), yRoad+1), 0, Y_ROAD));
 
         divideInBlocks(Zone(zone.getX1(),zone.getY1(),xRoad,yRoad));
         divideInBlocks(Zone(xRoad+1,zone.getY1(),zone.getX2(),yRoad));
@@ -56,13 +56,13 @@ void City::divideInBlocks(Zone zone)
     }
     else if(xDivide)
     {
-        roadList->addElement(new Element(Zone(xRoad,zone.getY1(),xRoad+1, zone.getY2()), 0, ROAD));
+        roadList->addElement(new Element(Zone(xRoad,zone.getY1(),xRoad+1, zone.getY2()), 0, X_ROAD));
         divideInBlocks(Zone(zone.getX1(),zone.getY1(),xRoad,zone.getY2()));
         divideInBlocks(Zone(xRoad+1,zone.getY1(),zone.getX2(),zone.getY2()));
     }
     else if(yDivide)
     {
-        roadList->addElement(new Element(Zone(zone.getX1(),yRoad,zone.getX2(), yRoad+1), 0, ROAD));
+        roadList->addElement(new Element(Zone(zone.getX1(),yRoad,zone.getX2(), yRoad+1), 0, Y_ROAD));
         divideInBlocks(Zone(zone.getX1(),zone.getY1(),zone.getX2(),yRoad));
         divideInBlocks(Zone(zone.getX1(),yRoad+1,zone.getX2(),zone.getY2()));
     }

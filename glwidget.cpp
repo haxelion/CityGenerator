@@ -22,7 +22,7 @@ GLWidget::GLWidget(QWidget *parent)
 }
 GLWidget::~GLWidget()
 {
-    for (int i = 0; i < TEXTURE_NUMBER; i++)
+    for (int i = 0; i < NUMBER_OF_BUFFER; i++)
     {
         if(textures[i] !=0)
             glDeleteTextures(1, &textures[i]);;
@@ -66,9 +66,9 @@ void GLWidget::initializeGL()
     glUseProgram(shaders->getShader());
     glUniform1i(samplerUL, 0);
     glUseProgram(0);
-    loadTexture("data/road_texture.png", 0);
-    loadTexture("data/building_texture.png", 1);
-    loadTexture("data/roof_texture.png", 2);
+    loadTexture("data/road_texture.png", ROAD_BUFFER);
+    loadTexture("data/building_texture.png", BUILDING_BUFFER);
+    loadTexture("data/roof_texture.png", ROOF_BUFFER);
 
     setView();
 }
@@ -104,17 +104,21 @@ void GLWidget::drawObject()
     glUniformMatrix4fv(viewMatrixUL, 1, GL_FALSE, glm::value_ptr(viewMatrix));
     glActiveTexture(GL_TEXTURE0);
     //Draw roads
-    glBindTexture(GL_TEXTURE_2D, textures[0]);
-    buffers->bindRoad();
-    glDrawElements(GL_TRIANGLES, buffers->getRoadTrianglesNumber()*3, GL_UNSIGNED_INT, (GLvoid*)0);
-    //Draw Building
-    glBindTexture(GL_TEXTURE_2D, textures[1]);
-    buffers->bindBuilding();
-    glDrawElements(GL_TRIANGLES, buffers->getBuildingTrianglesNumber()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+    glBindTexture(GL_TEXTURE_2D, textures[ROAD_BUFFER]);
+    buffers->bindBuffer(ROAD_BUFFER);
+    glDrawElements(GL_TRIANGLES, buffers->getBufferIndicesNumber(ROAD_BUFFER), GL_UNSIGNED_INT, (GLvoid*)0);
+    //Draw intersections
+    glBindTexture(GL_TEXTURE_2D, textures[ROAD_BUFFER]);//utilise cette texture en attendant
+    buffers->bindBuffer(INTERSECTION_BUFFER);
+    glDrawElements(GL_TRIANGLES, buffers->getBufferIndicesNumber(INTERSECTION_BUFFER), GL_UNSIGNED_INT, (GLvoid*)0);
+    //Draw building
+    glBindTexture(GL_TEXTURE_2D, textures[BUILDING_BUFFER]);
+    buffers->bindBuffer(BUILDING_BUFFER);
+    glDrawElements(GL_TRIANGLES, buffers->getBufferIndicesNumber(BUILDING_BUFFER), GL_UNSIGNED_INT, (GLvoid*)0);
     //Draw roof
-    glBindTexture(GL_TEXTURE_2D, textures[2]);
-    buffers->bindRoof();
-    glDrawElements(GL_TRIANGLES, buffers->getRoofTrianglesNumber()*3, GL_UNSIGNED_INT, (GLvoid*)0);
+    glBindTexture(GL_TEXTURE_2D, textures[ROOF_BUFFER]);
+    buffers->bindBuffer(ROOF_BUFFER);
+    glDrawElements(GL_TRIANGLES, buffers->getBufferIndicesNumber(ROOF_BUFFER), GL_UNSIGNED_INT, (GLvoid*)0);
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -275,7 +279,7 @@ void GLWidget::setZRotation(int angle)
 void GLWidget::loadTexture(const char *textureName, int place)
 {
 
-    if(place>=TEXTURE_NUMBER)
+    if(place>=NUMBER_OF_BUFFER)
         return;
     if (textures[place]==0)
         glDeleteTextures(1, &textures[place]);

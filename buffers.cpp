@@ -2,31 +2,32 @@
 
 Buffers::Buffers(City *city)
 {
-    glGenVertexArrays(NUMBER_OF_VAO, vao);
-    glGenBuffers(NUMBER_OF_VAO*2, vbo);
-    generateRoadBuffer(city->getRoadList());
-    generateElementBuffer(city->getBlockList());
+    glGenVertexArrays(NUMBER_OF_BUFFER, vao);
+    glGenBuffers(NUMBER_OF_BUFFER*2, vbo);
+    countElements(city->getBlockList(), city->getRoadList());
+    generateRoadBuffers(city->getRoadList());
+    generateElementBuffers(city->getBlockList());
 }
 
 Buffers::~Buffers()
 {
-    glDeleteVertexArrays(NUMBER_OF_VAO, vao);
-    glDeleteBuffers(NUMBER_OF_VAO*2, vbo);
+    glDeleteVertexArrays(NUMBER_OF_BUFFER, vao);
+    glDeleteBuffers(NUMBER_OF_BUFFER*2, vbo);
 }
 
-void Buffers::VBOGeneration (int n, float* vertices, GLsizei size)
+void Buffers::VBOGeneration (BufferType type, float* vertices, GLsizei size)
 {
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[n]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[type]);
     glBufferData(GL_ARRAY_BUFFER, size*sizeof(float), vertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, 5*sizeof(float), (GLvoid*)0);
     glVertexAttribPointer(1,2,GL_FLOAT, GL_FALSE, 5*sizeof(float), (GLvoid*)(3*sizeof(float)));
 }
 
-void Buffers::IBOGeneration(int n, GLuint* indices, GLsizei size)
+void Buffers::IBOGeneration(BufferType type, GLuint* indices, GLsizei size)
 {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[n+NUMBER_OF_VAO]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[type+NUMBER_OF_BUFFER]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, size*sizeof(GLuint), indices, GL_STATIC_DRAW);
 }
 
@@ -112,10 +113,28 @@ void Buffers::makeGardenVBO(float *vertices, Element *garden)
 
 void Buffers::makeRoadVBO(float *vertices, Element *road)
 {
-    makeVertex(vertices, road->getX1(), road->getY1(), 0, 0, 0);
-    makeVertex(vertices+5, road->getX2(), road->getY1(), 0, road->getXWidth(), 0);
-    makeVertex(vertices+10, road->getX2(), road->getY2(), 0, road->getXWidth(), road->getYWidth());
-    makeVertex(vertices+15, road->getX1(), road->getY2(), 0, 0, road->getYWidth());
+    if(road->getType() == X_ROAD)
+    {
+        makeVertex(vertices, road->getX1(), road->getY1(), 0, 0, 0);
+        makeVertex(vertices+5, road->getX2(), road->getY1(), 0, 0, road->getXWidth());
+        makeVertex(vertices+10, road->getX2(), road->getY2(), 0, road->getYWidth(), road->getXWidth());
+        makeVertex(vertices+15, road->getX1(), road->getY2(), 0, road->getYWidth(), 0);
+    }
+    else if(road->getType() == Y_ROAD)
+    {
+        makeVertex(vertices, road->getX1(), road->getY1(), 0, 0, 0);
+        makeVertex(vertices+5, road->getX2(), road->getY1(), 0, road->getXWidth(), 0);
+        makeVertex(vertices+10, road->getX2(), road->getY2(), 0, road->getXWidth(), road->getYWidth());
+        makeVertex(vertices+15, road->getX1(), road->getY2(), 0, 0, road->getYWidth());
+    }
+}
+
+void Buffers::makeIntersectionVBO(float *vertices, Element *intersection)
+{
+    makeVertex(vertices, intersection->getX1(), intersection->getY1(), 0, 0, 0);
+    makeVertex(vertices+5, intersection->getX2(), intersection->getY1(), 0, 1, 0);
+    makeVertex(vertices+10, intersection->getX2(), intersection->getY2(), 0, 1, 1);
+    makeVertex(vertices+15, intersection->getX1(), intersection->getY2(), 0, 0, 1);
 }
 
 void Buffers::makeRoofVBO(float *vertices, Element *building)
@@ -127,31 +146,60 @@ void Buffers::makeRoofVBO(float *vertices, Element *building)
     makeVertex(vertices+15, building->getX1(), building->getY2(), h, 0, building->getYWidth());
 }
 
-void Buffers::generateRoadBuffer(List<Element*> *roadList)
+void Buffers::generateRoadBuffers(List<Element*> *r)
 {
-    roadNumber = roadList->getSize();
-    float *vertices = new float [20*roadNumber];
-    GLuint *indices = new GLuint [6*roadNumber];
-    roadList->start();
-    for(int i = 0;!roadList->isAtTheEnd();i++)
+    float *roadVertices = new float [verticesNumber[ROAD_BUFFER]];
+    GLuint *roadIndices = new GLuint [indicesNumber[ROAD_BUFFER]];
+    float *intersectionVertices = new float [verticesNumber[INTERSECTION_BUFFER]];
+    GLuint *intersectionIndices = new GLuint [indicesNumber[INTERSECTION_BUFFER]];
+    int i = 0;
+    int j = 0;
+    r->start();
+    while(!r->isAtTheEnd())
     {
-        makeRoadVBO(vertices+i*20, roadList->getCurrentElement());
-        makeQuadIndices(indices+i*6, i*4);
-        roadList->next();
+        if(r->getCurrentElement()->getType() == X_ROAD || r->getCurrentElement()->getType() == Y_ROAD)
+        {
+            makeRoadVBO(roadVertices+i*20, r->getCurrentElement());
+            makeQuadIndices(roadIndices+i*6, i*4);
+            i++;
+        }
+        else if(r->getCurrentElement()->getType() == INTERSECTION)
+        {
+            makeIntersectionVBO(intersectionVertices+j*20, r->getCurrentElement());
+            makeQuadIndices(intersectionIndices+j*6, j*4);
+            j++;
+        }
+        r->next();
     }
 
-    glBindVertexArray(vao[0]);
-    VBOGeneration(0, vertices, 20*roadNumber);
-    IBOGeneration(0, indices, 6*roadNumber);
+    glBindVertexArray(vao[ROAD_BUFFER]);
+    VBOGeneration(ROAD_BUFFER, roadVertices, verticesNumber[ROAD_BUFFER]);
+    IBOGeneration(ROAD_BUFFER, roadIndices, indicesNumber[ROAD_BUFFER]);
+    glBindVertexArray(vao[INTERSECTION_BUFFER]);
+    VBOGeneration(INTERSECTION_BUFFER, intersectionVertices, verticesNumber[INTERSECTION_BUFFER]);
+    IBOGeneration(INTERSECTION_BUFFER, intersectionIndices, indicesNumber[INTERSECTION_BUFFER]);
     glBindVertexArray(0);
-    delete[] vertices;
-    delete[] indices;
+    delete[] roadVertices;
+    delete[] roadIndices;
+    delete[] intersectionVertices;
+    delete[] intersectionIndices;
 }
 
-void Buffers::countElements(List<Block *> *b)
+void Buffers::countElements(List<Block *> *b, List<Element*> *r)
 {
-    gardenNumber = 0;
-    buildingNumber = 0;
+    int gardenNumber = 0;
+    int buildingNumber = 0;
+    int roadNumber = 0;
+    int intersectionNumber = 0;
+    r->start();
+    while(!r->isAtTheEnd())
+    {
+        if(r->getCurrentElement()->getType() == X_ROAD || r->getCurrentElement()->getType() == Y_ROAD)
+            roadNumber++;
+        else if(r->getCurrentElement()->getType() == INTERSECTION)
+            intersectionNumber++;
+        r->next();
+    }
     b->start();
     while (!b->isAtTheEnd())
     {
@@ -161,24 +209,32 @@ void Buffers::countElements(List<Block *> *b)
         {
             if(l->getCurrentElement()->getType() == BUILDING)
                 buildingNumber++;
-            if(l->getCurrentElement()->getType()== GARDEN)
+            else if(l->getCurrentElement()->getType()== GARDEN)
                 gardenNumber++;
             l->next();
         }
         b->next();
     }
+    verticesNumber[GARDEN_BUFFER] = 20*gardenNumber;
+    indicesNumber[GARDEN_BUFFER] = 6*gardenNumber;
+    verticesNumber[BUILDING_BUFFER] = 80*buildingNumber;
+    indicesNumber[BUILDING_BUFFER] = 24*buildingNumber;
+    verticesNumber[ROOF_BUFFER] = 20*buildingNumber;
+    indicesNumber[ROOF_BUFFER] = 6*buildingNumber;
+    verticesNumber[ROAD_BUFFER] = 20*roadNumber;
+    indicesNumber[ROAD_BUFFER] = 6*roadNumber;
+    verticesNumber[INTERSECTION_BUFFER] = 20*intersectionNumber;
+    indicesNumber[INTERSECTION_BUFFER] = 6*intersectionNumber;
 }
 
-void Buffers::generateElementBuffer(List<Block*> *BlockList)
+void Buffers::generateElementBuffers(List<Block*> *BlockList)
 {
-    // Comptage prealable du nombre de jardin et de batiment.
-    countElements(BlockList);
-    float *gardenVertices = new float [20*gardenNumber];
-    GLuint *gardenIndices = new GLuint [6*gardenNumber];
-    float *buildingVertices = new float [80*buildingNumber];
-    GLuint *buildingIndices = new GLuint [24*buildingNumber];
-    float *roofVertices = new float [20*buildingNumber];
-    GLuint *roofIndices = new GLuint [6*buildingNumber];
+    float *gardenVertices = new float [verticesNumber[GARDEN_BUFFER]];
+    GLuint *gardenIndices = new GLuint [indicesNumber[GARDEN_BUFFER]];
+    float *buildingVertices = new float [verticesNumber[BUILDING_BUFFER]];
+    GLuint *buildingIndices = new GLuint [indicesNumber[BUILDING_BUFFER]];
+    float *roofVertices = new float [verticesNumber[ROOF_BUFFER]];
+    GLuint *roofIndices = new GLuint [indicesNumber[ROOF_BUFFER]];
 
     int i=0; // Pour les des jardins.
     int j=0; // Pour les buildings et toits
@@ -216,15 +272,15 @@ void Buffers::generateElementBuffer(List<Block*> *BlockList)
         BlockList->next();
     }
 
-    glBindVertexArray(vao[1]);
-    VBOGeneration(1, gardenVertices, 20*gardenNumber);
-    IBOGeneration(1, gardenIndices, 6*gardenNumber);
-    glBindVertexArray(vao[2]);
-    VBOGeneration(2, roofVertices, 20*buildingNumber);
-    IBOGeneration(2, roofIndices, 6*buildingNumber);
-    glBindVertexArray(vao[3]);
-    VBOGeneration(3, buildingVertices, 80*buildingNumber);
-    IBOGeneration(3, buildingIndices, 24*buildingNumber);
+    glBindVertexArray(vao[GARDEN_BUFFER]);
+    VBOGeneration(GARDEN_BUFFER, gardenVertices, verticesNumber[GARDEN_BUFFER]);
+    IBOGeneration(GARDEN_BUFFER, gardenIndices, indicesNumber[GARDEN_BUFFER]);
+    glBindVertexArray(vao[ROOF_BUFFER]);
+    VBOGeneration(ROOF_BUFFER, roofVertices, verticesNumber[ROOF_BUFFER]);
+    IBOGeneration(ROOF_BUFFER, roofIndices, indicesNumber[ROOF_BUFFER]);
+    glBindVertexArray(vao[BUILDING_BUFFER]);
+    VBOGeneration(BUILDING_BUFFER, buildingVertices, verticesNumber[BUILDING_BUFFER]);
+    IBOGeneration(BUILDING_BUFFER, buildingIndices, indicesNumber[BUILDING_BUFFER]);
     glBindVertexArray(0);
 
     delete[] gardenVertices;
@@ -235,32 +291,10 @@ void Buffers::generateElementBuffer(List<Block*> *BlockList)
     delete[] buildingIndices;
 }
 
-void Buffers::bindRoad()
+void Buffers::bindBuffer(BufferType type)
 {
-    glBindVertexArray(vao[0]);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[0+NUMBER_OF_VAO]);
+    glBindVertexArray(vao[type]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[type]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[type+NUMBER_OF_BUFFER]);
 }
-
-void Buffers::bindRoof()
-{
-    glBindVertexArray(vao[2]);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[2+NUMBER_OF_VAO]);
-}
-
-void Buffers::bindBuilding()
-{
-    glBindVertexArray(vao[3]);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[3]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[3+NUMBER_OF_VAO]);
-}
-void Buffers::bindGarden()
-{
-    glBindVertexArray(vao[1]);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1+NUMBER_OF_VAO]);
-}
-
-
 
