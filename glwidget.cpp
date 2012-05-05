@@ -13,9 +13,9 @@ GLWidget::GLWidget(QWidget *parent)
     yFOV = 60.0f;
     angleX = 0;
     angleY = 0;
-    positionX = 0;
-    positionY = 0;
-    positionZ = -2;
+    positionX = -10;
+    positionY = -10;
+    positionZ = -20;
     city = NULL;
     for (int i = 0; i < 4; i++)
         textures[i]=0;
