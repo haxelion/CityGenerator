@@ -7,6 +7,7 @@
 #include <QGLWidget>
 #include <QString>
 #include <QImage>
+#include <QCursor>
 #include <math.h>
 #include "glm.hpp"
 #include "city.h"
@@ -17,6 +18,12 @@
 #include "QPoint"
 
 //#include "model.h"
+
+enum Keys {KEY_Z, KEY_S, KEY_Q, KEY_D, KEY_A, KEY_E};
+const int KEY_NUMBER = 6;
+const float ROTATION_SPEED = 0.02f;
+const float FAST_SPEED = 0.4;
+const float SLOW_SPEED = 0.2;
 
 class GLWidget : public QGLWidget
 {
@@ -31,24 +38,19 @@ public:
     void setCity(City *city);
     void loadTexture(const char *textureName, int place);
 
-public slots:
-    void setXRotation(int angle);
-    void setYRotation(int angle);
-    void setZRotation(int angle);
-
 protected:
     void initializeGL();
     void paintGL();
     void resizeGL(int width, int height);
 
     void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent * event);
 
 private:
     void setView();
     void drawObject();
+    void updateCamera();
 
 private:
 
@@ -57,9 +59,12 @@ private:
     Buffers *buffers;
     Shaders *shaders;
     GLuint textures[NUMBER_OF_BUFFER];
-    QPoint lastPos;
-    float angleX,angleY,positionX,positionY,positionZ;
-
+    QTimer *renderTimer;
+    bool mouseCaptured;
+    bool pressedKey[KEY_NUMBER];
+    float angleX,angleY;
+    glm::vec3 position;
+    float speed;
 
     glm::mat4 projectionMatrix, viewMatrix;
     GLuint projectionMatrixUL, viewMatrixUL, samplerUL;

@@ -6,19 +6,28 @@ GLWidget::GLWidget(QWidget *parent)
     this->format().setVersion(3,3);
     this->format().setAlpha(true);
     setFocus();
+    mouseCaptured = false;
 
     shaders = new Shaders();
     buffers = 0;
 
+    position.x = 10;
+    position.y = 10;
+    position.z = 10;
     yFOV = 60.0f;
-    angleX = 0;
+    angleX = -M_PI/2;
     angleY = 0;
-    positionX = -10;
-    positionY = -10;
-    positionZ = -20;
+    speed = SLOW_SPEED;
     city = NULL;
+
     for (int i = 0; i < 4; i++)
         textures[i]=0;
+    for(int i = 0; i<KEY_NUMBER; i++)
+        pressedKey[i] = false;
+
+    renderTimer = new QTimer(this);
+    connect(renderTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
+    renderTimer->start(25);
 }
 GLWidget::~GLWidget()
 {
@@ -29,6 +38,7 @@ GLWidget::~GLWidget()
     }
     delete buffers;
     delete shaders;
+    delete renderTimer;
 }
 
 QSize GLWidget::minimumSizeHint() const
@@ -70,6 +80,7 @@ void GLWidget::initializeGL()
     loadTexture("data/building_texture.png", BUILDING_BUFFER);
     loadTexture("data/roof_texture.png", ROOF_BUFFER);
     loadTexture("data/intersection_texture.png", INTERSECTION_BUFFER);
+    loadTexture("data/grass.png", GARDEN_BUFFER);
 
     setView();
 }
@@ -89,7 +100,7 @@ void GLWidget::setCity(City *city)
 void GLWidget::setView()
 {
     glViewport(0,0,this->width(), this->height());
-    projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),1.0f, 1000.0f);
+    projectionMatrix = glm::perspective(yFOV, this->width()/(float)this->height(),0.25f, 500.0f);
     glUseProgram(shaders->getShader());
     glUniformMatrix4fv(projectionMatrixUL, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
     glUseProgram(0);
@@ -98,9 +109,6 @@ void GLWidget::setView()
 void GLWidget::drawObject()
 {
     glUseProgram(shaders->getShader());
-    viewMatrix = glm::translate(glm::mat4(),glm::vec3(positionX,positionY,positionZ));
-    viewMatrix = glm::rotate(viewMatrix,angleX,glm::vec3(1.0,0,0));
-    viewMatrix = glm::rotate(viewMatrix,angleY,glm::vec3(0,1.0,0));
 
     glUniformMatrix4fv(viewMatrixUL, 1, GL_FALSE, glm::value_ptr(viewMatrix));
     glActiveTexture(GL_TEXTURE0);
@@ -120,6 +128,10 @@ void GLWidget::drawObject()
     glBindTexture(GL_TEXTURE_2D, textures[ROOF_BUFFER]);
     buffers->bindBuffer(ROOF_BUFFER);
     glDrawElements(GL_TRIANGLES, buffers->getBufferIndicesNumber(ROOF_BUFFER), GL_UNSIGNED_INT, (GLvoid*)0);
+    //Draw garden
+    glBindTexture(GL_TEXTURE_2D, textures[GARDEN_BUFFER]);
+    buffers->bindBuffer(GARDEN_BUFFER);
+    glDrawElements(GL_TRIANGLES, buffers->getBufferIndicesNumber(GARDEN_BUFFER), GL_UNSIGNED_INT, (GLvoid*)0);
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -128,6 +140,7 @@ void GLWidget::drawObject()
 void GLWidget::paintGL()
 {
     makeCurrent();
+    updateCamera();
 
     //Vide les differents buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -147,135 +160,118 @@ void GLWidget::resizeGL(int, int)
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
     setFocus();
-    lastPos = event->pos();
-    updateGL();
+    if(mouseCaptured)
+    {
+        mouseCaptured = false;
+        setCursor(Qt::ArrowCursor);
+    }
+    else
+    {
+        mouseCaptured = true;
+        QCursor::setPos(QWidget::mapToGlobal(QPoint(width()/2,height()/2)));
+        setCursor(Qt::BlankCursor);
+    }
 }
-void GLWidget::mouseMoveEvent(QMouseEvent *event)
+
+void GLWidget::updateCamera()
 {
-    int dx = event->x() - lastPos.x();
-    int dy = event->y() - lastPos.y();
-    int constant = 8;
-    angleY += constant*dx;
-    angleX += constant*dy;
-    lastPos = event->pos();
+    if(mouseCaptured)
+    {
+        QPoint pos = QCursor::pos();
+        QPoint center = QWidget::mapToGlobal(QPoint(width()/2,height()/2));
+        angleX -= (pos.y()-center.y())*ROTATION_SPEED;
+        angleY -= (pos.x()-center.x())*ROTATION_SPEED;
+        if(angleX<-M_PI/2+0.1)
+            angleX = -M_PI/2+0.1;
+        else if(angleX>M_PI/2-0.1)
+            angleX = M_PI/2-0.1;
+        float sx = sin(angleX);
+        float cx = cos(angleX);
+        float sy = sin(angleY);
+        float cy = cos(angleY);
+        glm::vec3 lookDirection = glm::vec3(cy*cx, sy*cx, sx);
+        if(pressedKey[KEY_Z])
+            position += speed*lookDirection;
+        if(pressedKey[KEY_S])
+            position -= speed*lookDirection;
+        if(pressedKey[KEY_Q])
+            position += speed*glm::vec3(-sy*cx, cy*cx, 0);
+        if(pressedKey[KEY_D])
+            position -= speed*glm::vec3(-sy*cx, cy*cx, 0);
+        if(pressedKey[KEY_A])
+            position += speed*glm::vec3(-cy*sx, -sy*sx, cx);
+        if(pressedKey[KEY_E])
+            position -= speed*glm::vec3(-cy*sx, -sy*sx, cx);
+
+        QCursor::setPos(center);
+        viewMatrix = glm::lookAt(position, position+lookDirection, glm::vec3(0,0,2));
+    }
 }
 
 void GLWidget::keyPressEvent(QKeyEvent *event)
 {
-    float constant = 1;
-    float rayon = sqrt(positionX*positionX+positionY*positionY+positionZ*positionZ);
     switch(event->key())
     {
-    case Qt::Key_Down:
-         rayon-=constant;
-         positionX= rayon*cos(angleX)*cos(angleY);
-         positionY= rayon*sin(angleX);
-         positionZ= rayon*cos(angleX)*sin(angleY);
-        break;
-    case Qt::Key_Up :
-         rayon+=constant;
-         positionX= rayon*cos(angleX)*cos(angleY);
-         positionY= rayon*sin(angleX);
-         positionZ= rayon*cos(angleX)*sin(angleY);
-        break;
-    case Qt::Key_Left:
-        positionZ += constant*sin(angleY);
-        positionX += constant*cos(angleY);
-        break;
-    case Qt::Key_Right :
-        positionZ -= constant*sin(angleY);
-        positionX -= constant*cos(angleY);
-        break;
-
-    case Qt::Key_PageDown :
-         positionY-= constant;
-        break;
-
-    case Qt::Key_PageUp:
-         positionY+= constant;
-        break;
-
-    default:
-        break;
+        case Qt::Key_Z:
+            pressedKey[KEY_Z] = true;
+            break;
+        case Qt::Key_S :
+            pressedKey[KEY_S] = true;
+            break;
+        case Qt::Key_Q:
+            pressedKey[KEY_Q] = true;
+            break;
+        case Qt::Key_D :
+            pressedKey[KEY_D] = true;
+            break;
+        case Qt::Key_A :
+            pressedKey[KEY_A] = true;
+            break;
+        case Qt::Key_E:
+            pressedKey[KEY_E] = true;
+            break;
+        case Qt::Key_Shift :
+            speed = FAST_SPEED;
+            break;
+        case Qt::Key_Escape:
+            mouseCaptured = false;
+            setCursor(Qt::ArrowCursor);
+            break;
+        default:
+            break;
     }
-    update();
 }
 
-
-void GLWidget::wheelEvent(QWheelEvent *event)
+void GLWidget::keyReleaseEvent(QKeyEvent *event)
 {
-    /*float notch = event->delta()/ 120.0f;
-
-    switch(event->modifiers())
+    switch(event->key())
     {
-    case Qt::ShiftModifier :
-        mFov = max(mFov * powf(1.2f, notch), 10.0f);
-        mFov = min(mFov, 90.0f);
-        setView();
-        break;
-    default:
-        mScale *= pow(1.2f, -notch);
-        break;
+        case Qt::Key_Z:
+            pressedKey[KEY_Z] = false;
+            break;
+        case Qt::Key_S :
+            pressedKey[KEY_S] = false;
+            break;
+        case Qt::Key_Q:
+            pressedKey[KEY_Q] = false;
+            break;
+        case Qt::Key_D :
+            pressedKey[KEY_D] = false;
+            break;
+        case Qt::Key_A :
+            pressedKey[KEY_A] = false;
+            break;
+        case Qt::Key_E:
+            pressedKey[KEY_E] = false;
+            break;
+        case Qt::Key_Shift :
+            speed = SLOW_SPEED;
+            break;
+        default:
+            break;
     }
-    update();*/
 }
 
-//Gestion du clavier
-//void GLWidget::keyPressEvent(QKeyEvent *event)
-//{
-    /*switch(event->key())
-    {
-    case Qt::Key_Down:
-        mYTranslate -= 0.5;
-        break;
-    case Qt::Key_Up :
-        mYTranslate += 0.5;
-        break;
-    case Qt::Key_Left:
-        mXTranslate -= 0.5;
-        break;
-    case Qt::Key_Right :
-        mXTranslate += 0.5;
-        break;
-    case Qt::Key_PageDown :
-        mZTranslate -= 0.5;
-        break;
-    case Qt::Key_PageUp:
-        mZTranslate += 0.5;
-        break;
-    default:
-        break;
-    }
-    update();*/
-//}
-
-void GLWidget::setXRotation(int angle)
-{
-    /*qNormalizeAngle(angle);
-    if (angle != mXRotate) {
-        mXRotate = angle;
-        emit xRotationChanged(angle);
-        updateGL();
-    }*/
-}
-void GLWidget::setYRotation(int angle)
-{
-    /*qNormalizeAngle(angle);
-    if (angle != mYRotate) {
-        mYRotate = angle;
-        emit yRotationChanged(angle);
-        updateGL();
-    }*/
-}
-void GLWidget::setZRotation(int angle)
-{
-    /*qNormalizeAngle(angle);
-    if (angle != mZRotate) {
-        mZRotate = angle;
-        emit zRotationChanged(angle);
-        updateGL();
-    }*/
-}
 
 void GLWidget::loadTexture(const char *textureName, int place)
 {

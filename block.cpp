@@ -13,6 +13,11 @@ Block::Block(Zone zone, float minBuildingHeight, float maxBuildingHeight, float 
     divideInElements(*(Zone*)this);
 }
 
+Block::~Block()
+{
+    delete elementList;
+}
+
 void Block::divideInElements(Zone zone)
 {
     bool divideX = false, divideY = false;

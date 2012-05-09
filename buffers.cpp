@@ -106,9 +106,9 @@ void Buffers::makeBuildingVBO(float *vertices, Element *building)
 void Buffers::makeGardenVBO(float *vertices, Element *garden)
 {
     makeVertex(vertices, garden->getX1(), garden->getY1(), 0, 0, 0);
-    makeVertex(vertices+5, garden->getX2(), garden->getY1(), 0, 1, 0);
-    makeVertex(vertices+10, garden->getX2(), garden->getY2(), 0, 1, 1);
-    makeVertex(vertices+15, garden->getX1(), garden->getY2(), 0, 0, 1);
+    makeVertex(vertices+5, garden->getX2(), garden->getY1(), 0, garden->getXWidth(), 0);
+    makeVertex(vertices+10, garden->getX2(), garden->getY2(), 0, garden->getXWidth(), garden->getYWidth());
+    makeVertex(vertices+15, garden->getX1(), garden->getY2(), 0, 0, garden->getYWidth());
 }
 
 void Buffers::makeRoadVBO(float *vertices, Element *road)
