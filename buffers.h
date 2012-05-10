@@ -35,7 +35,7 @@ private:
     void makeIntersectionVBO(float *vertices, Element *intersection);
     void VBOGeneration(BufferType type, float* vertices, GLsizei size);
     void IBOGeneration(BufferType type, GLuint* indices, GLsizei size);
-    void makeVertex(float *vertex, float x, float y, float z, float u, float v);
+    void makeVertex(float *vertex, float x, float y, float z, float u, float v, float nx, float ny, float nz);
     void makeQuadIndices(GLuint *indices, int i);
     void makeBuildingIndices(GLuint *indices, int i);
 };

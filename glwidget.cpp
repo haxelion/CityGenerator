@@ -18,6 +18,9 @@ GLWidget::GLWidget(QWidget *parent)
     angleX = (float)-M_PI/2+0.1f;
     angleY = 0;
     speed = SLOW_SPEED;
+    reflectionIntensity = 32;
+    ambientColor = glm::vec3(0.2f,0.2f,0.2f);
+    sunColor = glm::vec3(1.0f,1.0f,1.0f);
     city = NULL;
 
     for (int i = 0; i < 4; i++)
@@ -66,13 +69,19 @@ void GLWidget::initializeGL()
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
-    shaders->loadShader("data/fragment_basic.glsl", GL_FRAGMENT_SHADER);
-    shaders->loadShader("data/vertex_basic.glsl", GL_VERTEX_SHADER);
+    shaders->loadShader("data/fragment_lightning.glsl", GL_FRAGMENT_SHADER);
+    shaders->loadShader("data/vertex_lightning.glsl", GL_VERTEX_SHADER);
     shaders->compileShader();
 
     projectionMatrixUL = glGetUniformLocation(shaders->getShader(), "projectionMatrix");
     viewMatrixUL = glGetUniformLocation(shaders->getShader(), "viewMatrix");
+    normalMatrixUL = glGetUniformLocation(shaders->getShader(), "normalMatrix");
+    sunDirectionUL = glGetUniformLocation(shaders->getShader(), "sunDirection");
+    sunColorUL = glGetUniformLocation(shaders->getShader(), "sunColor");
+    ambientColorUL = glGetUniformLocation(shaders->getShader(), "ambientColor");
+    reflectionIntensityUL = glGetUniformLocation(shaders->getShader(), "reflectionIntensity");
     samplerUL = glGetUniformLocation(shaders->getShader(), "textureSampler");
+
     glUseProgram(shaders->getShader());
     glUniform1i(samplerUL, 0);
     glUseProgram(0);
@@ -111,6 +120,12 @@ void GLWidget::drawObject()
     glUseProgram(shaders->getShader());
 
     glUniformMatrix4fv(viewMatrixUL, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+    glUniformMatrix3fv(normalMatrixUL, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+    glUniform3fv(sunDirectionUL, 1, glm::value_ptr(sunDirection));
+    glUniform3fv(sunColorUL, 1, glm::value_ptr(sunColor));
+    glUniform3fv(ambientColorUL, 1, glm::value_ptr(ambientColor));
+    glUniform1iv(reflectionIntensityUL, 1, &reflectionIntensity);
+
     glActiveTexture(GL_TEXTURE0);
     //Draw roads
     glBindTexture(GL_TEXTURE_2D, textures[ROAD_BUFFER]);
@@ -204,6 +219,8 @@ void GLWidget::updateCamera()
 
         QCursor::setPos(center);
         viewMatrix = glm::lookAt(position, position+lookDirection, glm::vec3(0,0,2));
+        normalMatrix = glm::mat3(viewMatrix);
+        sunDirection = glm::normalize(normalMatrix*glm::vec3(1.0f,0.0f,1.0f));
     }
 }
 

@@ -67,7 +67,10 @@ private:
     float speed;
 
     glm::mat4 projectionMatrix, viewMatrix;
-    GLuint projectionMatrixUL, viewMatrixUL, samplerUL;
+    glm::mat3 normalMatrix;
+    glm::vec3 sunDirection, sunColor, ambientColor;
+    int reflectionIntensity;
+    GLuint projectionMatrixUL, viewMatrixUL, samplerUL, normalMatrixUL, sunDirectionUL, sunColorUL, ambientColorUL, reflectionIntensityUL;
 
 
 };
