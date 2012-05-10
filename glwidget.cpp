@@ -15,7 +15,7 @@ GLWidget::GLWidget(QWidget *parent)
     position.y = 10;
     position.z = 10;
     yFOV = 60.0f;
-    angleX = -M_PI/2;
+    angleX = (float)-M_PI/2+0.1f;
     angleY = 0;
     speed = SLOW_SPEED;
     city = NULL;
@@ -148,7 +148,6 @@ void GLWidget::paintGL()
     //Dessine les objects dans la scene
     if(city!=NULL)
         drawObject();
-
 }
 void GLWidget::resizeGL(int, int)
 {
@@ -157,7 +156,7 @@ void GLWidget::resizeGL(int, int)
 
 
 //Gestion de la souris
-void GLWidget::mousePressEvent(QMouseEvent *event)
+void GLWidget::mousePressEvent(QMouseEvent*)
 {
     setFocus();
     if(mouseCaptured)
@@ -182,9 +181,9 @@ void GLWidget::updateCamera()
         angleX -= (pos.y()-center.y())*ROTATION_SPEED;
         angleY -= (pos.x()-center.x())*ROTATION_SPEED;
         if(angleX<-M_PI/2+0.1)
-            angleX = -M_PI/2+0.1;
+            angleX = (float)-M_PI/2+0.1f;
         else if(angleX>M_PI/2-0.1)
-            angleX = M_PI/2-0.1;
+            angleX = (float)M_PI/2-0.1f;
         float sx = sin(angleX);
         float cx = cos(angleX);
         float sy = sin(angleY);

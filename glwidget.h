@@ -21,9 +21,9 @@
 
 enum Keys {KEY_Z, KEY_S, KEY_Q, KEY_D, KEY_A, KEY_E};
 const int KEY_NUMBER = 6;
-const float ROTATION_SPEED = 0.02f;
-const float FAST_SPEED = 0.4;
-const float SLOW_SPEED = 0.2;
+const float ROTATION_SPEED = 0.01f;
+const float FAST_SPEED = 0.4f;
+const float SLOW_SPEED = 0.2f;
 
 class GLWidget : public QGLWidget
 {
@@ -43,7 +43,7 @@ protected:
     void paintGL();
     void resizeGL(int width, int height);
 
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent * event);
 
