@@ -42,7 +42,7 @@ void City::divideInBlocks(Zone zone)
     if(zone.getXWidth()>maxBlockSize) // Si la zone est plus grande que la taille maximale d'un bloc.
     {
 
-        xRoad=rand(zone.getX1()+minBlockSize+1, zone.getX2()-minBlockSize); // On la découpe en prenant soin de ne pas dépasser la taille minimale d'un bloc.
+        xRoad=rand(zone.getX1()+minBlockSize+1, zone.getX2()-minBlockSize); // On la découpe en prenant soin de ne pas depasser la taille minimale d'un bloc.
         xDivide=true;
     }
 

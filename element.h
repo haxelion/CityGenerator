@@ -6,6 +6,7 @@
 
 enum ElementType {X_ROAD, Y_ROAD, INTERSECTION, BUILDING, GARDEN};
 
+//classe representant un element de la ville
 class Element : public Zone
 {
 private:

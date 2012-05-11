@@ -1,7 +1,7 @@
 #ifndef LIST_H
 #define LIST_H
 
-//classe template implémentant une liste liée
+//classes templates implementant une liste liee
 
 template <class T> class ListItem
 {
@@ -41,10 +41,10 @@ public:
 
     ~List()
     {
-        //on revient au début de la liste
+        //on revient au debut de la liste
         start();
         ListItem<T> *t;
-        //on parcourt toute la chaine en supprimant les éléments un à un
+        //on parcourt toute la chaine en supprimant les elements un e un
         while(position<size)
         {
             t = current;
@@ -56,12 +56,12 @@ public:
 
     void addElement(T a)
     {
-        //insertion de a au début de la liste
+        //insertion de a au debut de la liste
         ListItem<T> *t = first;
         first = new ListItem<T>(a);
         //lien du reste de la liste au nouveau premier maillon
         first->setNext(t);
-        //mise à jour de la taille et de la position de current
+        //mise e jour de la taille et de la position de current
         size++;
         position++;
     }
@@ -76,16 +76,16 @@ public:
         }
         else
         {
-            //on veut trouver l'élément juste avant celui à supprimer
+            //on veut trouver l'element juste avant celui e supprimer
             goTo(position--);
-            //on mémorise l'élément après celui à supprimer
+            //on memorise l'element après celui e supprimer
             ListItem<T> *t = (current->getNext())->getNext();
             //on supprime l'élément
             delete current->getNext();
-            //on lie l'élément avant avec l'élément après pour reformer la liste
+            //on lie l'element avant avec l'element apres pour reformer la liste
             current->setNext(t);
         }
-        //on met à jour la taille
+        //on met e jour la taille
         size--;
 
     }
