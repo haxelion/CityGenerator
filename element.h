@@ -21,7 +21,6 @@ public:
         this->height = height;
         this->type = type;
     }
-    ~Element();
 
     ElementType getType() const {return type;}
     float getHeight() const {return height;}

@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete myCity;
 }
 
 void MainWindow::start()

@@ -18,7 +18,19 @@ City::City(int xWidth, int yWidth)
 
 City::~City()
 {
+    blockList->start();
+    while(!blockList->isAtTheEnd())
+    {
+        delete blockList->getCurrentElement();
+        blockList->next();
+    }
     delete blockList;
+    roadList->start();
+    while(!roadList->isAtTheEnd())
+    {
+        delete roadList->getCurrentElement();
+        roadList->next();
+    }
     delete roadList;
 }
 

@@ -63,6 +63,7 @@ private:
     bool mouseCaptured;
     bool pressedKey[KEY_NUMBER];
     float angleX,angleY;
+    float sunAngle;
     glm::vec3 position;
     float speed;
 

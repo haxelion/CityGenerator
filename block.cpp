@@ -15,6 +15,12 @@ Block::Block(Zone zone, float minBuildingHeight, float maxBuildingHeight, float 
 
 Block::~Block()
 {
+    elementList->start();
+    while(!elementList->isAtTheEnd())
+    {
+        delete elementList->getCurrentElement();
+        elementList->next();
+    }
     delete elementList;
 }
 

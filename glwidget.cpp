@@ -17,6 +17,7 @@ GLWidget::GLWidget(QWidget *parent)
     yFOV = 60.0f;
     angleX = (float)-M_PI/2+0.1f;
     angleY = 0;
+    sunAngle = 0;
     speed = SLOW_SPEED;
     reflectionIntensity = 32;
     ambientColor = glm::vec3(0.2f,0.2f,0.2f);
@@ -220,8 +221,9 @@ void GLWidget::updateCamera()
         QCursor::setPos(center);
         viewMatrix = glm::lookAt(position, position+lookDirection, glm::vec3(0,0,2));
         normalMatrix = glm::mat3(viewMatrix);
-        sunDirection = glm::normalize(normalMatrix*glm::vec3(1.0f,0.0f,1.0f));
     }
+    sunAngle+= 0.01;
+    sunDirection = glm::normalize(normalMatrix*glm::vec3(sin(sunAngle),cos(sunAngle),1.0f));
 }
 
 void GLWidget::keyPressEvent(QKeyEvent *event)
