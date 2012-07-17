@@ -244,7 +244,7 @@ void GLWidget::updateCamera()
         normalMatrix = glm::mat3(viewMatrix);
     }
     //rotation du soleil et calcul de sa direction dans les coordonnees de la camera
-    sunAngle+= 0.01;
+    sunAngle+= 0.01f;
     sunDirection = glm::normalize(normalMatrix*glm::vec3(sin(sunAngle),cos(sunAngle),1.0f));
 }
 
