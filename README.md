@@ -4,7 +4,7 @@ CityGenerator
 1. Introduction
 ----------------
 
-This software generate a city using a simple recursive algorithm and display it in 3D in a nice GUI. This software is _totally useless.
+This software generate a city using a simple recursive algorithm and display it in 3D in a nice GUI. This software is **totally** useless.
 Copyright (C) 2012  Charles 'haxelion' Hubain
 
 This program is free software: you can redistribute it and/or modify
@@ -34,9 +34,5 @@ Oh yeah, and the sun is rotating around the scene ^^
 3. Warning
 ----------
 
-This code was written very fastly during a busy semester. It is _awful_ and _badly_ structured. It need a lot of refactoring but there was no time for it.
+This code was written very fastly during a busy semester. It is **awful** and **badly** structured. It need a lot of refactoring but there was no time for it.
 Also the commit messages are in french.
-
-4. License
-----------
-
